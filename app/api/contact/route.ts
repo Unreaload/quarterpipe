@@ -1,7 +1,26 @@
 import { NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
 
+const rateLimit = new Map<string, number[]>();
+const WINDOW_MS = 15 * 60 * 1000; // 15 minutes
+const MAX_REQUESTS = 5;
+
+function isRateLimited(ip: string): boolean {
+  const now = Date.now();
+  const timestamps = rateLimit.get(ip) ?? [];
+  const recent = timestamps.filter(t => now - t < WINDOW_MS);
+  if (recent.length >= MAX_REQUESTS) return true;
+  recent.push(now);
+  rateLimit.set(ip, recent);
+  return false;
+}
+
 export async function POST(request: Request) {
+  const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown';
+  if (isRateLimited(ip)) {
+    return NextResponse.json({ error: 'Zu viele Anfragen. Bitte später erneut versuchen.' }, { status: 429 });
+  }
+
   const data = await request.json() as Record<string, string>;
 
   const smtpHost = process.env.SMTP_HOST;

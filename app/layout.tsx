@@ -15,6 +15,19 @@ const inter = Inter({
 export const metadata = {
   title: "Quarterpipe Hamburg",
   description: "Skatehalle, Proberaum und Eventlocation in der Hamburger HafenCity – Teil des Amigo* Wohnprojekts.",
+  openGraph: {
+    title: "Quarterpipe Hamburg",
+    description: "Skatehalle, Proberaum und Eventlocation in der Hamburger HafenCity – Teil des Amigo* Wohnprojekts.",
+    url: "https://quarterpipe.de",
+    siteName: "Quarterpipe Hamburg",
+    locale: "de_DE",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Quarterpipe Hamburg",
+    description: "Skatehalle, Proberaum und Eventlocation in der Hamburger HafenCity – Teil des Amigo* Wohnprojekts.",
+  },
 };
 
 export default function RootLayout({

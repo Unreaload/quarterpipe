@@ -1,4 +1,5 @@
 import { Header } from './components/Header';
+import { MapEmbed } from './components/MapEmbed';
 import { MietenForm } from './components/MietenForm';
 import { ProberaumForm } from './components/ProberaumForm';
 import { fetchEvents } from './lib/teamup';
@@ -93,6 +94,8 @@ export default async function Home() {
         </div>
       </div>
 
+      <div className="py-[15rem]"><hr className="border-t-4 border-black w-[90%] mx-auto" /></div>
+
       {/* ── 2. MEHR ALS EIN RAUM ──────────────────────────────────────────── */}
       <section
         id="raum"
@@ -116,25 +119,31 @@ export default async function Home() {
           </div>
         </div>
 
-        {/* Right: video placeholder */}
-        <div className="flex-1 bg-neutral-900 relative flex items-center justify-center min-h-[60vw] overflow-hidden group">
-          <div className="absolute z-20 w-16 h-16 md:w-24 md:h-24 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center border-2 border-white/50 group-hover:scale-110 group-hover:bg-white transition-all duration-300 cursor-pointer">
-            <div className="w-0 h-0 border-t-[10px] border-t-transparent border-l-[16px] border-l-white border-b-[10px] border-b-transparent ml-2 group-hover:border-l-black transition-colors"></div>
-          </div>
-          <span className="relative z-10 font-black italic text-3xl md:text-5xl text-white opacity-20 group-hover:opacity-0 transition-opacity duration-500 text-center px-4 uppercase">
-            [Video Drop]
-          </span>
-          <div className="absolute inset-0 bg-gradient-to-tr from-black/80 to-transparent pointer-events-none"></div>
+        {/* Right: photo */}
+        <div className="flex-1 bg-neutral-900 flex items-center justify-center p-8 md:p-12 overflow-hidden">
+          <img
+            src="/images/IMG_9890.webp"
+            alt="Quarterpipe Außenschild"
+            className="w-[70%] max-h-[30vw] object-cover"
+            loading="lazy"
+          />
         </div>
       </section>
+
+      <div className="py-[15rem]"><hr className="border-t-4 border-black w-[90%] mx-auto" /></div>
 
       {/* ── 3. MIETEN ─────────────────────────────────────────────────────── */}
       <section
         id="mieten"
         className="scroll-mt-[30vh] split-section bg-white text-black flex flex-col"
       >
-        <div className="flex-1 bg-neutral-100 relative flex items-center justify-center min-h-[60vw]">
-          <span className="font-black italic text-4xl md:text-6xl opacity-10 uppercase tracking-tighter">[Foto]</span>
+        <div className="flex-1 bg-neutral-100 flex items-center justify-center p-8 md:p-12 overflow-hidden">
+          <img
+            src="/images/IMG_9883.webp"
+            alt="Quarterpipe Hauptraum"
+            className="w-[70%] max-h-[30vw] object-cover"
+            loading="lazy"
+          />
         </div>
 
         <div className="flex-1 flex flex-col">
@@ -149,6 +158,8 @@ export default async function Home() {
           <MietenForm />
         </div>
       </section>
+
+      <div className="py-[15rem]"><hr className="border-t-4 border-black w-[90%] mx-auto" /></div>
 
       {/* ── 4. PROBERAUM ──────────────────────────────────────────────────── */}
       <section
@@ -167,39 +178,54 @@ export default async function Home() {
           <ProberaumForm />
         </div>
 
-        <div className="flex-1 bg-neutral-100 relative flex items-center justify-center min-h-[60vw]">
-          <span className="font-black italic text-4xl md:text-6xl opacity-10 uppercase tracking-tighter">[Foto]</span>
+        <div className="flex-1 bg-neutral-100 flex items-center justify-center p-8 md:p-12 overflow-hidden">
+          <img
+            src="/images/IMG_9887.webp"
+            alt="Quarterpipe Bar-Bereich"
+            className="w-[70%] max-h-[30vw] object-cover"
+            loading="lazy"
+          />
         </div>
       </section>
+
+      <div className="py-[15rem]"><hr className="border-t-4 border-black w-[90%] mx-auto" /></div>
 
       {/* ── 5. ABOUT AMIGO* WOHNPROJEKT ───────────────────────────────────── */}
       <section
         id="amigo"
-        className="scroll-mt-[30vh] bg-black text-white"
+        className="scroll-mt-[30vh] split-section bg-black text-white flex flex-col"
       >
-        <div className="w-[95%] max-w-[1600px] mx-auto py-24 md:py-40 flex flex-col gap-12 md:gap-16">
+        <div className="flex-1 bg-neutral-900 flex items-center justify-center p-8 md:p-12 overflow-hidden">
+          <img
+            src="/images/IMG_9902.webp"
+            alt="Quarterpipe Innenraum"
+            className="w-[70%] max-h-[30vw] object-cover"
+            loading="lazy"
+          />
+        </div>
+
+        <div className="flex-1 flex flex-col px-8 md:px-16 py-20 md:py-32 gap-10 md:gap-14">
           <div className="flex flex-col gap-6">
             <p className="font-mono text-[10px] tracking-[0.4em] uppercase opacity-40">Das Projekt dahinter</p>
             <h2 className="text-4xl md:text-6xl lg:text-[5rem] font-black italic leading-[0.9] tracking-tighter flyer-text">
               Amigo*<br />Wohnprojekt
             </h2>
           </div>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-16 items-start">
-            <p className="text-xl md:text-2xl lg:text-3xl font-bold leading-[1.25] opacity-90">
-              Die Quarterpipe ist Teil des Amigo* Wohnprojekts in der Hafencity – einem gemeinschaftlichen Ort, der Wohnen, Kultur und Begegnung zusammendenkt.
-            </p>
-            <p className="text-base md:text-lg font-mono opacity-60 leading-relaxed tracking-wide">
-              [Placeholder – hier folgt mehr über das Wohnprojekt, seine Geschichte, seine Menschen und seine Werte. Wir freuen uns, wenn du vorbeischaust.]
-            </p>
-          </div>
+          <p className="text-xl md:text-2xl lg:text-3xl font-bold leading-[1.25] opacity-90">
+            Die Quarterpipe ist Teil des Amigo* Wohnprojekts in der Hafencity – einem gemeinschaftlichen Ort, der Wohnen, Kultur und Begegnung zusammendenkt.
+          </p>
+          <p className="text-base md:text-lg font-mono opacity-60 leading-relaxed tracking-wide">
+            Ein Ort, an dem Nachbarschaft gelebt wird – mit gemeinsamen Räumen, geteilter Verantwortung und der Überzeugung, dass gutes Zusammenleben kein Zufall ist. Wir freuen uns, wenn du vorbeischaust.
+          </p>
         </div>
       </section>
+
+      <div className="py-[15rem]"><hr className="border-t-4 border-black w-[90%] mx-auto" /></div>
 
       {/* ── 6. ANFAHRT ────────────────────────────────────────────────────── */}
       <section
         id="anfahrt"
         className="scroll-mt-[30vh] split-section flex flex-col"
-        style={{ minHeight: '400px' }}
       >
         <div className="flex-1 px-8 md:px-20 lg:px-28 py-20 md:py-32 flex flex-col gap-10">
           <h2 className="text-5xl md:text-[5rem] lg:text-[6rem] font-black italic leading-none tracking-tighter flyer-text">
@@ -212,16 +238,10 @@ export default async function Home() {
           </div>
         </div>
 
-        <div className="split-map flex-1 relative min-h-[300px] overflow-hidden">
-          <iframe
-            src="https://www.google.com/maps?q=Versmannstraße+66,+20457+Hamburg&output=embed"
-            className="absolute inset-0 w-full h-full"
-            style={{ border: 0 }}
-            allowFullScreen
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-            title="Quarterpipe Hamburg"
-          />
+        <div className="split-map flex-1 flex items-center justify-center p-8 md:p-12 overflow-hidden">
+          <div className="relative w-[70%] h-0 pb-[20vw] overflow-hidden">
+            <MapEmbed />
+          </div>
         </div>
       </section>
 

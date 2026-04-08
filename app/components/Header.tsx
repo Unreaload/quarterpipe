@@ -36,7 +36,7 @@ export function Header() {
     return () => window.removeEventListener('keydown', onKey);
   }, []);
 
-  const scale = 1 - scrollProgress * 0.6;
+  const scale = 1 - scrollProgress * 0.75;
   const burgerOpacity = scrollProgress > 0.7 ? (scrollProgress - 0.7) / 0.3 : 0;
 
   return (
@@ -44,7 +44,7 @@ export function Header() {
       {/* FIXED HEADER — collapses on scroll */}
       <header
         className="fixed top-0 left-0 w-full bg-black text-white z-50 flex items-center justify-center transition-all ease-out overflow-hidden"
-        style={{ height: `${100 - scrollProgress * 70}vh` }}
+        style={{ height: `${100 - scrollProgress * 85}vh` }}
       >
         <div
           style={{ transform: `scale(${scale})`, transformOrigin: 'center' }}

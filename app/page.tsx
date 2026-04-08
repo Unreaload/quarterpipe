@@ -1,4 +1,7 @@
+import { EventList } from './components/EventList';
 import { Header } from './components/Header';
+import { ScrollZoomImage } from './components/ScrollZoomImage';
+import { SkaterDivider } from './components/SkaterDivider';
 import { MapEmbed } from './components/MapEmbed';
 import { MietenForm } from './components/MietenForm';
 import { ProberaumForm } from './components/ProberaumForm';
@@ -60,41 +63,13 @@ export default async function Home() {
               {eventsError && (
                 <p className="font-mono text-sm opacity-40 tracking-widest uppercase py-8">Programm konnte nicht geladen werden.</p>
               )}
-              {events.map((event: TeamUpEvent) => {
-                const isPast = event.date < today;
-                return (
-                  <div
-                    key={event.id}
-                    className={`group w-full border-t-4 border-black pt-8 pb-10 md:pt-10 md:pb-14 transition-all duration-500 ${isPast ? 'opacity-20 grayscale' : 'opacity-100'}`}
-                  >
-                    <h3 className="text-5xl sm:text-6xl md:text-8xl lg:text-[10rem] font-black leading-[0.88] tracking-tighter hover:opacity-40 transition-opacity break-words hyphens-auto w-full mb-3 md:mb-4">
-                      {event.title}
-                    </h3>
-                    <div className="flex flex-wrap justify-end items-center gap-2 md:gap-3">
-                      <span className="font-mono text-sm md:text-base tracking-[0.2em] uppercase opacity-50">
-                        {event.date.split('-').reverse().slice(0, 2).join('.')}
-                      </span>
-                      <span className="font-mono text-sm md:text-base opacity-30">—</span>
-                      <span className="font-mono text-sm md:text-base tracking-[0.2em] uppercase opacity-50">
-                        {event.time} Uhr
-                      </span>
-                      {event.sub && <>
-                        <span className="font-mono text-sm md:text-base opacity-30">—</span>
-                        <span className="font-mono text-sm md:text-base tracking-[0.2em] uppercase opacity-50">{event.sub}</span>
-                      </>}
-                      {event.date === today && (
-                        <span className="bg-black text-white text-[8px] md:text-xs px-2 md:px-3 py-1 font-mono animate-pulse uppercase shrink-0 ml-1">Heute</span>
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
+              <EventList events={events} today={today} />
             </div>
           </section>
         </div>
       </div>
 
-      <div className="py-[15rem]"><hr className="border-t-4 border-black w-[90%] mx-auto" /></div>
+      <SkaterDivider />
 
       {/* ── 2. MEHR ALS EIN RAUM ──────────────────────────────────────────── */}
       <section
@@ -121,16 +96,15 @@ export default async function Home() {
 
         {/* Right: photo */}
         <div className="flex-1 bg-neutral-900 flex items-center justify-center p-8 md:p-12 overflow-hidden">
-          <img
+          <ScrollZoomImage
             src="/images/IMG_9890.webp"
             alt="Quarterpipe Außenschild"
             className="w-[70%] max-h-[30vw] object-cover"
-            loading="lazy"
           />
         </div>
       </section>
 
-      <div className="py-[15rem]"><hr className="border-t-4 border-black w-[90%] mx-auto" /></div>
+      <SkaterDivider />
 
       {/* ── 3. MIETEN ─────────────────────────────────────────────────────── */}
       <section
@@ -138,11 +112,10 @@ export default async function Home() {
         className="scroll-mt-[30vh] split-section bg-white text-black flex flex-col"
       >
         <div className="flex-1 bg-neutral-100 flex items-center justify-center p-8 md:p-12 overflow-hidden">
-          <img
+          <ScrollZoomImage
             src="/images/IMG_9883.webp"
             alt="Quarterpipe Hauptraum"
             className="w-[70%] max-h-[30vw] object-cover"
-            loading="lazy"
           />
         </div>
 
@@ -159,7 +132,7 @@ export default async function Home() {
         </div>
       </section>
 
-      <div className="py-[15rem]"><hr className="border-t-4 border-black w-[90%] mx-auto" /></div>
+      <SkaterDivider />
 
       {/* ── 4. PROBERAUM ──────────────────────────────────────────────────── */}
       <section
@@ -179,16 +152,15 @@ export default async function Home() {
         </div>
 
         <div className="flex-1 bg-neutral-100 flex items-center justify-center p-8 md:p-12 overflow-hidden">
-          <img
+          <ScrollZoomImage
             src="/images/IMG_9887.webp"
             alt="Quarterpipe Bar-Bereich"
             className="w-[70%] max-h-[30vw] object-cover"
-            loading="lazy"
           />
         </div>
       </section>
 
-      <div className="py-[15rem]"><hr className="border-t-4 border-black w-[90%] mx-auto" /></div>
+      <SkaterDivider />
 
       {/* ── 5. ABOUT AMIGO* WOHNPROJEKT ───────────────────────────────────── */}
       <section
@@ -196,11 +168,10 @@ export default async function Home() {
         className="scroll-mt-[30vh] split-section bg-black text-white flex flex-col"
       >
         <div className="flex-1 bg-neutral-900 flex items-center justify-center p-8 md:p-12 overflow-hidden">
-          <img
+          <ScrollZoomImage
             src="/images/IMG_9902.webp"
             alt="Quarterpipe Innenraum"
             className="w-[70%] max-h-[30vw] object-cover"
-            loading="lazy"
           />
         </div>
 
@@ -220,7 +191,7 @@ export default async function Home() {
         </div>
       </section>
 
-      <div className="py-[15rem]"><hr className="border-t-4 border-black w-[90%] mx-auto" /></div>
+      <SkaterDivider />
 
       {/* ── 6. ANFAHRT ────────────────────────────────────────────────────── */}
       <section

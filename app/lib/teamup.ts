@@ -4,6 +4,7 @@ export interface TeamUpEvent {
   time: string;  // HH:MM
   title: string;
   sub: string;
+  description: string;
 }
 
 export async function fetchEvents(): Promise<TeamUpEvent[]> {
@@ -42,12 +43,14 @@ export async function fetchEvents(): Promise<TeamUpEvent[]> {
     location?: string;
   }) => {
     const dt = new Date(e.start_dt);
+    const notes = e.notes ?? '';
     return {
       id: e.id,
       date: dt.toISOString().split('T')[0],
       time: dt.toTimeString().slice(0, 5),
       title: e.title,
-      sub: e.location ?? e.notes?.split('\n')[0] ?? '',
+      sub: e.location ?? notes.split('\n')[0] ?? '',
+      description: notes,
     };
   });
 

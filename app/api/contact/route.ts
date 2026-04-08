@@ -21,7 +21,31 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Zu viele Anfragen. Bitte später erneut versuchen.' }, { status: 429 });
   }
 
-  const data = await request.json() as Record<string, string>;
+  let data: Record<string, string>;
+  try {
+    data = await request.json();
+  } catch {
+    return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
+  }
+
+  const sanitize = (s: unknown): string =>
+    String(s ?? '').slice(0, 1000).replace(/[\x00-\x08\x0B\x0C\x0E-\x1F]/g, '');
+
+  // Sanitize all values
+  for (const key of Object.keys(data)) {
+    data[key] = sanitize(data[key]);
+  }
+
+  // Validate required fields
+  const { name, email, subject } = data;
+  if (!name || !email || !subject) {
+    return NextResponse.json({ error: 'Name, E-Mail und Betreff sind erforderlich.' }, { status: 400 });
+  }
+
+  // Basic email format check
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return NextResponse.json({ error: 'Ungültige E-Mail-Adresse.' }, { status: 400 });
+  }
 
   const smtpHost = process.env.SMTP_HOST;
   const smtpUser = process.env.SMTP_USER;
@@ -40,7 +64,7 @@ export async function POST(request: Request) {
     auth: { user: smtpUser, pass: smtpPass },
   });
 
-  const { formType, name, email, subject, ...rest } = data;
+  const { formType, ...rest } = data;
 
   const fields = Object.entries(rest)
     .filter(([key, val]) => key !== 'privacy' && val)

@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:www.quarterpipe.hamburg)",
+      "WebFetch(domain:api.teamup.com)",
+      "WebFetch(domain:ics.teamup.com)"
+    ]
+  }
+}

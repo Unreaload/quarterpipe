@@ -14,7 +14,7 @@ const inter = Inter({
 
 export const metadata = {
   title: "Quarterpipe Hamburg",
-  description: "Movement, Creativity, and Exchange in HafenCity",
+  description: "Skatehalle, Proberaum und Eventlocation in der Hamburger HafenCity – Teil des Amigo* Wohnprojekts.",
 };
 
 export default function RootLayout({

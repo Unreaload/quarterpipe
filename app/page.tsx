@@ -1,121 +1,25 @@
-'use client';
-import { useEffect, useState } from 'react';
-import type { TeamUpEvent } from './api/events/route';
+import { Header } from './components/Header';
+import { MietenForm } from './components/MietenForm';
+import { ProberaumForm } from './components/ProberaumForm';
+import { fetchEvents } from './lib/teamup';
+import type { TeamUpEvent } from './lib/teamup';
 
-export default function Home() {
-  const [scrollProgress, setScrollProgress] = useState(0);
-  const [events, setEvents] = useState<TeamUpEvent[]>([]);
-  const [eventsError, setEventsError] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const position = window.scrollY;
-      const progress = Math.min(position / 400, 1);
-      setScrollProgress(progress);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  useEffect(() => {
-    fetch('/api/events')
-      .then(r => r.ok ? r.json() : Promise.reject(r.status))
-      .then(setEvents)
-      .catch(() => setEventsError(true));
-  }, []);
-
-  const [menuOpen, setMenuOpen] = useState(false);
-
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setMenuOpen(false); };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, []);
-
-  const scale = 1 - (scrollProgress * 0.6);
+export default async function Home() {
   const today = new Date().toISOString().split('T')[0];
-  const burgerOpacity = scrollProgress > 0.7 ? (scrollProgress - 0.7) / 0.3 : 0;
+  const currentMonth = new Date().toLocaleDateString('de-DE', { month: 'long' });
 
-  const navLinks = [
-    { href: '#events',    label: 'Events',    num: '01' },
-    { href: '#raum',      label: 'Der Raum',  num: '02' },
-    { href: '#mieten',    label: 'Mieten',    num: '03' },
-    { href: '#proberaum', label: 'Proberaum', num: '04' },
-    { href: '#amigo',     label: 'Amigo*',    num: '05' },
-    { href: '#anfahrt',   label: 'Anfahrt',   num: '06' },
-  ];
+  let events: TeamUpEvent[] = [];
+  let eventsError = false;
+  try {
+    events = await fetchEvents();
+  } catch {
+    eventsError = true;
+  }
 
   return (
     <main className="w-full max-w-[100vw] bg-white text-black selection:bg-black selection:text-white overflow-clip font-sans">
 
-      {/* FIXED HEADER — collapses on scroll */}
-      <header
-        className="fixed top-0 left-0 w-full bg-black text-white z-50 flex items-center justify-center transition-all ease-out overflow-hidden"
-        style={{ height: `${100 - (scrollProgress * 70)}vh` }}
-      >
-        <div style={{ transform: `scale(${scale})`, transformOrigin: 'center' }} className="flex flex-col items-center w-full px-4">
-          <p className="text-[10px] md:text-sm font-mono tracking-[0.6em] uppercase opacity-60 mb-4 md:mb-8 text-center">
-            Hamburg // Hafencity
-          </p>
-          <h1 className="text-[12vw] sm:text-[14vw] md:text-[16vw] font-black uppercase tracking-tighter leading-none flyer-text text-center w-full whitespace-nowrap">
-            Quarter<span className="opacity-40">pipe</span>
-          </h1>
-        </div>
-      </header>
-
-      {/* BURGER BUTTON — fades in as header collapses */}
-      <button
-        onClick={() => setMenuOpen(true)}
-        className="fixed top-6 right-6 md:top-8 md:right-10 z-[60] flex flex-col justify-center items-center gap-[6px] w-10 h-10"
-        style={{
-          opacity: burgerOpacity,
-          transition: 'opacity 0.2s ease',
-          pointerEvents: burgerOpacity < 0.1 ? 'none' : 'auto',
-        }}
-        aria-label="Menü öffnen"
-      >
-        <span className="block w-7 h-[2px] bg-white" />
-        <span className="block w-7 h-[2px] bg-white" />
-        <span className="block w-5 h-[2px] bg-white" />
-      </button>
-
-      {/* FULL-SCREEN MENU OVERLAY */}
-      {menuOpen && (
-        <div className="fixed inset-0 bg-black text-white z-[100] flex flex-col">
-          {/* Close button */}
-          <button
-            onClick={() => setMenuOpen(false)}
-            className="absolute top-6 right-6 md:top-10 md:right-10 w-12 h-12 flex items-center justify-center opacity-60 hover:opacity-100 transition-opacity"
-            aria-label="Menü schließen"
-          >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-              <line x1="4" y1="4" x2="20" y2="20" />
-              <line x1="20" y1="4" x2="4" y2="20" />
-            </svg>
-          </button>
-
-          {/* Nav links */}
-          <nav className="flex flex-col justify-center h-full px-10 md:px-20 gap-0">
-            {navLinks.map(({ href, label, num }) => (
-              <a
-                key={href}
-                href={href}
-                onClick={() => setMenuOpen(false)}
-                className="group flex items-baseline gap-6 py-4 md:py-5 border-b border-white/10 hover:border-white/40 transition-colors"
-              >
-                <span className="font-mono text-[10px] tracking-[0.3em] opacity-30 shrink-0">{num}</span>
-                <span className="text-4xl sm:text-5xl md:text-7xl font-black italic tracking-tighter leading-none group-hover:opacity-60 transition-opacity">
-                  {label}
-                </span>
-              </a>
-            ))}
-          </nav>
-
-          <p className="absolute bottom-8 left-10 md:left-20 font-mono text-[10px] tracking-[0.4em] uppercase opacity-20">
-            Hamburg // Hafencity
-          </p>
-        </div>
-      )}
+      <Header />
 
       {/* Hero Spacer */}
       <div className="w-full h-[100vh]" />
@@ -144,22 +48,22 @@ export default function Home() {
           <section className="w-full flex flex-col items-end pt-20 pointer-events-auto">
             <header className="mb-16 md:mb-24 text-right w-full">
               <h2 className="text-5xl md:text-[6rem] lg:text-[8rem] font-black italic leading-[0.8] tracking-tighter flyer-text border-b-[8px] md:border-b-[16px] border-black inline-block pb-2 md:pb-4 break-words pl-2 pr-4 md:pr-8">
-                März
+                {currentMonth}
               </h2>
             </header>
 
             <div className="w-full flex flex-col items-end text-right">
               {events.length === 0 && !eventsError && (
-                <p className="font-mono text-sm opacity-40 tracking-widest uppercase py-8">Lade Programm…</p>
+                <p className="font-mono text-sm opacity-40 tracking-widest uppercase py-8">Keine Events gefunden.</p>
               )}
               {eventsError && (
                 <p className="font-mono text-sm opacity-40 tracking-widest uppercase py-8">Programm konnte nicht geladen werden.</p>
               )}
-              {events.map((event: TeamUpEvent, index: number) => {
+              {events.map((event: TeamUpEvent) => {
                 const isPast = event.date < today;
                 return (
                   <div
-                    key={index}
+                    key={event.id}
                     className={`group w-full border-t-4 border-black pt-8 pb-10 md:pt-10 md:pb-14 transition-all duration-500 ${isPast ? 'opacity-20 grayscale' : 'opacity-100'}`}
                   >
                     <h3 className="text-5xl sm:text-6xl md:text-8xl lg:text-[10rem] font-black leading-[0.88] tracking-tighter hover:opacity-40 transition-opacity break-words hyphens-auto w-full mb-3 md:mb-4">
@@ -224,7 +128,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── 4. MIETEN ─────────────────────────────────────────────────────── */}
+      {/* ── 3. MIETEN ─────────────────────────────────────────────────────── */}
       <section
         id="mieten"
         className="scroll-mt-[30vh] split-section bg-white text-black flex flex-col"
@@ -242,91 +146,11 @@ export default function Home() {
               Konzerte, Workshops, Sportkurse, Lesungen, Geburtstage – viel Platz, eine kleine Küche, eine Bar und flexible Raumgestaltung.
             </p>
           </div>
-
-          <form className="px-8 md:px-16 py-10 flex flex-col gap-0" onSubmit={(e) => e.preventDefault()}>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 border-b-4 border-black">
-              <div className="flex flex-col gap-3 py-8 md:py-10 md:pr-12 border-b-4 md:border-b-0 md:border-r-4 border-black">
-                <span className="font-mono text-[10px] tracking-[0.3em] uppercase opacity-40">01 — Name *</span>
-                <input type="text" required placeholder="Vor- und Nachname"
-                  className="bg-transparent outline-none text-2xl md:text-3xl font-black placeholder:opacity-20 w-full" />
-              </div>
-              <div className="flex flex-col gap-3 py-8 md:py-10 md:pl-12">
-                <span className="font-mono text-[10px] tracking-[0.3em] uppercase opacity-40">02 — E-Mail *</span>
-                <input type="email" required placeholder="deine@email.de"
-                  className="bg-transparent outline-none text-2xl md:text-3xl font-black placeholder:opacity-20 w-full" />
-              </div>
-            </div>
-
-            <div className="flex flex-col gap-3 py-8 md:py-10 border-b-4 border-black">
-              <span className="font-mono text-[10px] tracking-[0.3em] uppercase opacity-40">03 — Betreff *</span>
-              <input type="text" required placeholder="Worum geht es?"
-                className="bg-transparent outline-none text-2xl md:text-3xl font-black placeholder:opacity-20 w-full" />
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 border-b-4 border-black">
-              <div className="flex flex-col gap-3 py-8 md:py-10 md:pr-12 border-b-4 md:border-b-0 md:border-r-4 border-black">
-                <span className="font-mono text-[10px] tracking-[0.3em] uppercase opacity-40">04 — Event-Art</span>
-                <select className="bg-transparent outline-none text-2xl md:text-3xl font-black appearance-none cursor-pointer w-full">
-                  <option value="">Bitte wählen</option>
-                  <option>Konzert</option>
-                  <option>Workshop</option>
-                  <option>Sportkurs</option>
-                  <option>Lesung</option>
-                  <option>Geburtstag</option>
-                  <option>Sonstiges</option>
-                </select>
-              </div>
-              <div className="flex flex-col gap-3 py-8 md:py-10 md:pl-12">
-                <span className="font-mono text-[10px] tracking-[0.3em] uppercase opacity-40">05 — Erwartete Teilnehmer*innen</span>
-                <select className="bg-transparent outline-none text-2xl md:text-3xl font-black appearance-none cursor-pointer w-full">
-                  <option value="">Bitte wählen</option>
-                  <option>1–10</option>
-                  <option>10–25</option>
-                  <option>25–50</option>
-                  <option>50–100</option>
-                </select>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 border-b-4 border-black">
-              <div className="flex flex-col gap-3 py-8 md:py-10 md:pr-12 border-b-4 md:border-b-0 md:border-r-4 border-black">
-                <span className="font-mono text-[10px] tracking-[0.3em] uppercase opacity-40">06 — Gewünschtes Datum *</span>
-                <input type="date" required
-                  className="bg-transparent outline-none text-2xl md:text-3xl font-black w-full [color-scheme:light]" />
-              </div>
-              <div className="flex flex-col gap-3 py-8 md:py-10 md:pl-12">
-                <span className="font-mono text-[10px] tracking-[0.3em] uppercase opacity-40">07 — Weitere Infos zum Datum</span>
-                <input type="text" placeholder="Alternativtermine, Mehrfachbuchungen…"
-                  className="bg-transparent outline-none text-2xl md:text-3xl font-black placeholder:opacity-20 w-full" />
-              </div>
-            </div>
-
-            <div className="flex flex-col gap-3 py-8 md:py-10 border-b-4 border-black">
-              <span className="font-mono text-[10px] tracking-[0.3em] uppercase opacity-40">08 — Sonstiges</span>
-              <textarea rows={3} placeholder="Was du uns sonst noch sagen möchtest…"
-                className="bg-transparent outline-none text-2xl md:text-3xl font-black placeholder:opacity-20 resize-none w-full" />
-            </div>
-
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 pt-12 pb-16">
-              <div className="flex items-start gap-4 max-w-lg">
-                <input type="checkbox" required id="datenschutz" className="mt-1 w-5 h-5 shrink-0 cursor-pointer accent-black" />
-                <label htmlFor="datenschutz" className="font-mono text-[10px] leading-relaxed opacity-50 cursor-pointer tracking-wide">
-                  Ich stimme zu, dass meine Angaben zur Beantwortung meiner Anfrage gemäß der{' '}
-                  <a href="/datenschutz" className="underline hover:opacity-100">Datenschutzerklärung</a>{' '}
-                  verarbeitet werden. Meine Einwilligung kann ich jederzeit per E-Mail widerrufen.
-                </label>
-              </div>
-              <button type="submit"
-                className="border-4 border-black px-8 py-5 text-xl md:text-2xl font-black italic hover:bg-black hover:text-white transition-all shrink-0">
-                Anfrage senden
-              </button>
-            </div>
-          </form>
+          <MietenForm />
         </div>
       </section>
 
-      {/* ── 5. PROBERAUM ──────────────────────────────────────────────────── */}
+      {/* ── 4. PROBERAUM ──────────────────────────────────────────────────── */}
       <section
         id="proberaum"
         className="scroll-mt-[30vh] split-section bg-white text-black flex flex-col"
@@ -340,77 +164,7 @@ export default function Home() {
               Absorber, Molton, Lamellenvorhang – alles was für eine gelungene Jam-Session nötig ist. Für Bands, Solo-Projekte, Unterricht und Workshops.
             </p>
           </div>
-
-          <form className="px-8 md:px-16 py-10 flex flex-col gap-0" onSubmit={(e) => e.preventDefault()}>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 border-b-4 border-black">
-              <div className="flex flex-col gap-3 py-8 md:py-10 md:pr-12 border-b-4 md:border-b-0 md:border-r-4 border-black">
-                <span className="font-mono text-[10px] tracking-[0.3em] uppercase opacity-40">01 — Name *</span>
-                <input type="text" required placeholder="Vor- und Nachname"
-                  className="bg-transparent outline-none text-2xl md:text-3xl font-black placeholder:opacity-20 w-full" />
-              </div>
-              <div className="flex flex-col gap-3 py-8 md:py-10 md:pl-12">
-                <span className="font-mono text-[10px] tracking-[0.3em] uppercase opacity-40">02 — E-Mail *</span>
-                <input type="email" required placeholder="deine@email.de"
-                  className="bg-transparent outline-none text-2xl md:text-3xl font-black placeholder:opacity-20 w-full" />
-              </div>
-            </div>
-
-            <div className="flex flex-col gap-3 py-8 md:py-10 border-b-4 border-black">
-              <span className="font-mono text-[10px] tracking-[0.3em] uppercase opacity-40">03 — Betreff *</span>
-              <input type="text" required placeholder="Worum geht es?"
-                className="bg-transparent outline-none text-2xl md:text-3xl font-black placeholder:opacity-20 w-full" />
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 border-b-4 border-black">
-              <div className="flex flex-col gap-3 py-8 md:py-10 md:pr-12 border-b-4 md:border-b-0 md:border-r-4 border-black">
-                <span className="font-mono text-[10px] tracking-[0.3em] uppercase opacity-40">04 — Nutzungsart</span>
-                <select className="bg-transparent outline-none text-2xl md:text-3xl font-black appearance-none cursor-pointer w-full">
-                  <option value="">Bitte wählen</option>
-                  <option>Bandprobe</option>
-                  <option>Unterricht</option>
-                  <option>Sonstiges</option>
-                </select>
-              </div>
-              <div className="flex flex-col gap-3 py-8 md:py-10 md:pl-12">
-                <span className="font-mono text-[10px] tracking-[0.3em] uppercase opacity-40">05 — Anzahl Personen</span>
-                <select className="bg-transparent outline-none text-2xl md:text-3xl font-black appearance-none cursor-pointer w-full">
-                  <option value="">Bitte wählen</option>
-                  <option>1–2</option>
-                  <option>3–5</option>
-                  <option>6–10</option>
-                  <option>10+</option>
-                </select>
-              </div>
-            </div>
-
-            <div className="flex flex-col gap-3 py-8 md:py-10 border-b-4 border-black">
-              <span className="font-mono text-[10px] tracking-[0.3em] uppercase opacity-40">06 — Wunschtermin (Tag, Uhrzeit, Häufigkeit) *</span>
-              <input type="text" required placeholder="z.B. Dienstags 18–21 Uhr, wöchentlich"
-                className="bg-transparent outline-none text-2xl md:text-3xl font-black placeholder:opacity-20 w-full" />
-            </div>
-
-            <div className="flex flex-col gap-3 py-8 md:py-10 border-b-4 border-black">
-              <span className="font-mono text-[10px] tracking-[0.3em] uppercase opacity-40">07 — Detaillierte Mietanfrage *</span>
-              <textarea rows={3} required placeholder="Erzähl uns mehr über dein Projekt…"
-                className="bg-transparent outline-none text-2xl md:text-3xl font-black placeholder:opacity-20 resize-none w-full" />
-            </div>
-
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 pt-12 pb-16">
-              <div className="flex items-start gap-4 max-w-lg">
-                <input type="checkbox" required id="datenschutz-probe" className="mt-1 w-5 h-5 shrink-0 cursor-pointer accent-black" />
-                <label htmlFor="datenschutz-probe" className="font-mono text-[10px] leading-relaxed opacity-50 cursor-pointer tracking-wide">
-                  Ich stimme zu, dass meine Angaben zur Beantwortung meiner Anfrage gemäß der{' '}
-                  <a href="/datenschutz" className="underline hover:opacity-100">Datenschutzerklärung</a>{' '}
-                  verarbeitet werden. Meine Einwilligung kann ich jederzeit per E-Mail widerrufen.
-                </label>
-              </div>
-              <button type="submit"
-                className="border-4 border-black px-8 py-5 text-xl md:text-2xl font-black italic hover:bg-black hover:text-white transition-all shrink-0">
-                Anfrage senden
-              </button>
-            </div>
-          </form>
+          <ProberaumForm />
         </div>
 
         <div className="flex-1 bg-neutral-100 relative flex items-center justify-center min-h-[60vw]">
@@ -418,7 +172,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── 6. ABOUT AMIGO* WOHNPROJEKT ───────────────────────────────────── */}
+      {/* ── 5. ABOUT AMIGO* WOHNPROJEKT ───────────────────────────────────── */}
       <section
         id="amigo"
         className="scroll-mt-[30vh] bg-black text-white"

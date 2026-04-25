@@ -1,5 +1,11 @@
-import { Anton, Inter } from "next/font/google";
+import { Anton, Barlow_Condensed } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
+
+const lavaArabic = localFont({
+  src: "../public/fonts/Lava Arabic Regular.ttf",
+  variable: "--font-lava",
+});
 
 const anton = Anton({
   weight: "400",
@@ -7,9 +13,10 @@ const anton = Anton({
   variable: "--font-anton",
 });
 
-const inter = Inter({
+const barlow = Barlow_Condensed({
+  weight: ["400", "700", "900"],
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-barlow",
 });
 
 export const metadata = {
@@ -37,7 +44,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="de">
-      <body className={`${anton.variable} ${inter.variable} antialiased`}>
+      <body className={`${lavaArabic.variable} ${anton.variable} ${barlow.variable} antialiased`}>
         {children}
       </body>
     </html>

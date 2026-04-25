@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 
-export function SkaterDivider() {
+export function SkaterDivider({ female = false }: { female?: boolean }) {
   const ref = useRef<HTMLDivElement>(null);
   const [progress, setProgress] = useState(0);
 
@@ -106,9 +106,22 @@ export function SkaterDivider() {
           {/* Head */}
           <circle cx="-1" cy="-26" r="5.5" fill="none" stroke="black" strokeWidth="2" />
 
-          {/* Cap */}
-          <path d="M-7,-28 Q-1,-32 5,-28" stroke="black" strokeWidth="2" fill="none" strokeLinecap="round" />
-          <line x1="5" y1="-28" x2="9" y2="-29" stroke="black" strokeWidth="2" strokeLinecap="round" />
+          {female ? (
+            <>
+              {/* Long hair */}
+              <path d="M-6.5,-27 Q-8,-24 -9,-18" stroke="black" strokeWidth="2" fill="none" strokeLinecap="round" />
+              <path d="M-5.5,-29 Q-9,-26 -10,-20" stroke="black" strokeWidth="2" fill="none" strokeLinecap="round" />
+              <path d="M-4,-30 Q-8,-28 -8,-22" stroke="black" strokeWidth="2" fill="none" strokeLinecap="round" />
+              <path d="M4,-28 Q6,-24 5,-18" stroke="black" strokeWidth="2" fill="none" strokeLinecap="round" />
+              <path d="M3,-30 Q7,-26 6,-20" stroke="black" strokeWidth="2" fill="none" strokeLinecap="round" />
+            </>
+          ) : (
+            <>
+              {/* Cap */}
+              <path d="M-7,-28 Q-1,-32 5,-28" stroke="black" strokeWidth="2" fill="none" strokeLinecap="round" />
+              <line x1="5" y1="-28" x2="9" y2="-29" stroke="black" strokeWidth="2" strokeLinecap="round" />
+            </>
+          )}
 
           {/* Eye */}
           <circle cx="2" cy="-26" r="1" fill="black" />

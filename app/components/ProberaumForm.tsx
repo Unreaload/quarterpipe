@@ -9,6 +9,7 @@ const labelClass = 'font-mono text-[10px] tracking-[0.3em] uppercase opacity-40'
 
 export function ProberaumForm() {
   const [status, setStatus] = useState<Status>('idle');
+  const [open, setOpen] = useState(false);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -24,6 +25,20 @@ export function ProberaumForm() {
     } catch {
       setStatus('error');
     }
+  }
+
+  if (!open) {
+    return (
+      <div className="px-8 md:px-16 py-16 flex justify-start">
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          className="border-4 border-black px-8 py-5 text-xl md:text-2xl font-black italic hover:bg-black hover:text-white transition-all"
+        >
+          Anfrageformular öffnen
+        </button>
+      </div>
+    );
   }
 
   if (status === 'sent') {

@@ -10,7 +10,7 @@ import type { TeamUpEvent } from './lib/teamup';
 
 export default async function Home() {
   const today = new Date().toISOString().split('T')[0];
-  const currentMonth = new Date().toLocaleDateString('de-DE', { month: 'long' });
+
 
   let events: TeamUpEvent[] = [];
   let eventsError = false;
@@ -41,7 +41,7 @@ export default async function Home() {
             </svg>
             <div className="absolute top-0 left-0 w-[25%] h-full flex items-center justify-center">
               <span className="[writing-mode:vertical-lr] rotate-180 text-white font-bold tracking-[1em] uppercase opacity-30 text-[8px] sm:text-[10px] md:text-xs whitespace-nowrap">
-                QUARTERPIPE // THE SPACE
+                QUARTERPIPE
               </span>
             </div>
           </div>
@@ -52,7 +52,7 @@ export default async function Home() {
           <section className="w-full flex flex-col items-end pt-20 pointer-events-auto">
             <header className="mb-16 md:mb-24 text-right w-full">
               <h2 className="text-5xl md:text-[6rem] lg:text-[8rem] font-black italic leading-[0.8] tracking-tighter flyer-text border-b-[8px] md:border-b-[16px] border-black inline-block pb-2 md:pb-4 break-words pl-2 pr-4 md:pr-8">
-                {currentMonth}
+                Aktuelles Programm
               </h2>
             </header>
 
@@ -84,7 +84,7 @@ export default async function Home() {
           <p className="text-xl md:text-2xl lg:text-3xl font-bold leading-[1.2] opacity-90">
             Hier treffen sich Skater*innen, Kreative, Musiker*innen und Nachbar*innen, um gemeinsam aktiv zu werden. Ob für Indoor-Skaten, Konzerte oder Workshops – die Quarterpipe steht für Austausch, Ideen und besondere Momente.
           </p>
-          <div className="bg-black text-white p-6 md:p-8">
+          <div className="bg-black text-white p-6 md:p-8 border-4 border-dashed border-white/30" style={{ transform: 'rotate(0.6deg)' }}>
             <h4 className="font-black italic text-xl md:text-3xl mb-4 tracking-tighter">
               Hinweis zur Barrierefreiheit
             </h4>
@@ -104,7 +104,7 @@ export default async function Home() {
         </div>
       </section>
 
-      <SkaterDivider />
+      <SkaterDivider female />
 
       {/* ── 3. MIETEN ─────────────────────────────────────────────────────── */}
       <section
@@ -160,7 +160,7 @@ export default async function Home() {
         </div>
       </section>
 
-      <SkaterDivider />
+      <SkaterDivider female />
 
       {/* ── 5. ABOUT AMIGO* WOHNPROJEKT ───────────────────────────────────── */}
       <section
@@ -222,7 +222,7 @@ export default async function Home() {
 
           <div className="flex flex-col md:flex-row justify-between items-center gap-8 text-center md:text-left">
             <div>
-              <h2 className="text-4xl md:text-6xl font-black italic tracking-tighter mb-2 md:mb-4">The Space</h2>
+              <h2 className="text-4xl md:text-6xl font-black italic tracking-tighter mb-2 md:mb-4">Quarterpipe</h2>
               <p className="opacity-60 tracking-widest text-[10px] md:text-sm font-mono uppercase">
                 Versmannstraße 66 // 20457 Hamburg
               </p>
@@ -248,6 +248,7 @@ export default async function Home() {
           <div className="flex gap-6 opacity-40 text-[10px] md:text-xs font-mono uppercase tracking-widest border-t border-white/20 pt-8">
             <a href="/impressum" className="hover:opacity-100 transition-opacity">Impressum</a>
             <a href="/datenschutz" className="hover:opacity-100 transition-opacity">Datenschutz</a>
+            <a href="/mitglieder" className="hover:opacity-100 transition-opacity">Mitglieder</a>
           </div>
 
         </div>

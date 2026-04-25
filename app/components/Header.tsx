@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 const navLinks = [
   { href: '#events',    label: 'Events',    num: '01' },
@@ -14,19 +14,37 @@ const navLinks = [
 export function Header() {
   const [scrollProgress, setScrollProgress] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
+  const targetRef = useRef(0);
+  const currentRef = useRef(0);
 
   useEffect(() => {
     let rafId: number;
-    const handleScroll = () => {
-      cancelAnimationFrame(rafId);
-      rafId = requestAnimationFrame(() => {
-        setScrollProgress(Math.min(window.scrollY / 400, 1));
-      });
+
+    const tick = () => {
+      const target = targetRef.current;
+      const current = currentRef.current;
+      const next = current + (target - current) * 0.12;
+      if (Math.abs(target - next) < 0.0005) {
+        currentRef.current = target;
+        setScrollProgress(target);
+        rafId = 0;
+        return;
+      }
+      currentRef.current = next;
+      setScrollProgress(next);
+      rafId = requestAnimationFrame(tick);
     };
+
+    const handleScroll = () => {
+      targetRef.current = Math.min(window.scrollY / 500, 1);
+      if (!rafId) rafId = requestAnimationFrame(tick);
+    };
+
     window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
     return () => {
       window.removeEventListener('scroll', handleScroll);
-      cancelAnimationFrame(rafId);
+      if (rafId) cancelAnimationFrame(rafId);
     };
   }, []);
 
@@ -36,15 +54,17 @@ export function Header() {
     return () => window.removeEventListener('keydown', onKey);
   }, []);
 
-  const scale = 1 - scrollProgress * 0.75;
-  const burgerOpacity = scrollProgress > 0.7 ? (scrollProgress - 0.7) / 0.3 : 0;
+  // smoothstep easing: 3t² − 2t³
+  const eased = scrollProgress * scrollProgress * (3 - 2 * scrollProgress);
+  const scale = 1 - eased * 0.75;
+  const burgerOpacity = eased > 0.7 ? (eased - 0.7) / 0.3 : 0;
 
   return (
     <>
       {/* FIXED HEADER — collapses on scroll */}
       <header
-        className="fixed top-0 left-0 w-full bg-black text-white z-50 flex items-center justify-center transition-all ease-out overflow-hidden"
-        style={{ height: `${100 - scrollProgress * 85}vh` }}
+        className="fixed top-0 left-0 w-full bg-black text-white z-50 flex items-center justify-center overflow-hidden will-change-[height]"
+        style={{ height: `${100 - eased * 85}vh` }}
       >
         <div
           style={{ transform: `scale(${scale})`, transformOrigin: 'center' }}
@@ -53,9 +73,12 @@ export function Header() {
           <p className="text-[10px] md:text-sm font-mono tracking-[0.6em] uppercase opacity-60 mb-4 md:mb-8 text-center">
             Hamburg // Hafencity
           </p>
-          <h1 className="text-[12vw] sm:text-[14vw] md:text-[16vw] font-black uppercase tracking-tighter leading-none flyer-text text-center w-full whitespace-nowrap">
-            Quarter<span className="opacity-40">pipe</span>
-          </h1>
+          <img
+            src="/images/QP_Schriftzug.svg"
+            alt="Quarterpipe"
+            className="w-[90vw] md:w-[80vw] max-w-[1200px] h-auto"
+            style={{ transform: 'rotate(-1.5deg) skewX(-2deg)' }}
+          />
         </div>
       </header>
 
@@ -107,7 +130,7 @@ export function Header() {
               className="group flex items-baseline gap-6 py-4 md:py-5 border-b border-white/10 hover:border-white/40 transition-colors"
             >
               <span className="font-mono text-[10px] tracking-[0.3em] opacity-30 shrink-0">{num}</span>
-              <span className="text-4xl sm:text-5xl md:text-7xl font-black italic tracking-tighter leading-none group-hover:opacity-60 transition-opacity">
+              <span className="text-4xl sm:text-5xl md:text-7xl font-black italic tracking-tighter leading-none group-hover:opacity-60 transition-opacity" style={{ display: 'inline-block', transform: `rotate(${Number(num) % 2 === 0 ? '0.8' : '-0.6'}deg)` }}>
                 {label}
               </span>
             </a>

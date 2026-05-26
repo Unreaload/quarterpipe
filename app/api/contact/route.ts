@@ -67,6 +67,7 @@ export async function POST(request: Request) {
     port: Number(process.env.SMTP_PORT ?? 587),
     secure: process.env.SMTP_SECURE === 'true',
     auth: { user: smtpUser, pass: smtpPass },
+    tls: { servername: process.env.SMTP_TLS_SERVERNAME || undefined },
   });
 
   const { formType, ...rest } = data;
@@ -86,13 +87,18 @@ export async function POST(request: Request) {
     fields,
   ].join('\n');
 
-  await transporter.sendMail({
-    from: process.env.SMTP_FROM ?? `Quarterpipe Website <${smtpUser}>`,
-    to: contactEmail,
-    replyTo: email,
-    subject: `[Quarterpipe] ${formType ?? 'Anfrage'}: ${subject}`,
-    text,
-  });
+  try {
+    await transporter.sendMail({
+      from: process.env.SMTP_FROM ?? `Quarterpipe Website <${smtpUser}>`,
+      to: contactEmail,
+      replyTo: email,
+      subject: `[Quarterpipe] ${formType ?? 'Anfrage'}: ${subject}`,
+      text,
+    });
+  } catch (err) {
+    console.error('SMTP send failed:', err);
+    return NextResponse.json({ error: 'E-Mail konnte nicht gesendet werden.' }, { status: 502 });
+  }
 
   return NextResponse.json({ ok: true });
 }

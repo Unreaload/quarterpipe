@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TeamUp Cheat Sheet — quarterpipe.hamburg</title>
+<style>
+  @page { size: A4; margin: 18mm 16mm; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; font-size: 10pt; line-height: 1.5; color: #111; padding: 24px; max-width: 800px; margin: 0 auto; }
+  h1 { font-size: 20pt; font-weight: 900; font-style: italic; letter-spacing: -0.03em; margin-bottom: 4px; }
+  h1 span { font-weight: 400; font-style: normal; font-size: 10pt; color: #666; display: block; margin-top: 2px; }
+  h2 { font-size: 13pt; font-weight: 800; margin-top: 20px; margin-bottom: 8px; padding-bottom: 3px; border-bottom: 3px solid #000; }
+  h3 { font-size: 10.5pt; font-weight: 700; margin-top: 14px; margin-bottom: 6px; }
+  p, li { margin-bottom: 4px; }
+  ul { padding-left: 18px; }
+  table { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 9.5pt; }
+  th, td { text-align: left; padding: 5px 8px; border: 1px solid #ccc; }
+  th { background: #f0f0f0; font-weight: 700; font-size: 9pt; text-transform: uppercase; letter-spacing: 0.05em; }
+  code { background: #f0f0f0; padding: 1px 4px; border-radius: 2px; font-family: 'Cascadia Code', 'Consolas', monospace; font-size: 9pt; }
+  .example-block { background: #f7f7f7; border-left: 4px solid #000; padding: 8px 12px; margin: 8px 0; font-family: 'Cascadia Code', 'Consolas', monospace; font-size: 9pt; line-height: 1.6; white-space: pre-line; }
+  .hint { background: #fff3cd; border: 1px solid #e6c96e; padding: 8px 12px; margin: 8px 0; font-size: 9.5pt; }
+  .hint strong { color: #856404; }
+  .quickref { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px; }
+  .quickref-box { border: 3px solid #000; padding: 12px; }
+  .quickref-box h4 { font-size: 10pt; font-weight: 800; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .quickref-box.hidden-box { background: #f7f7f7; }
+  .quickref-box ul { margin: 0; padding-left: 16px; }
+  .quickref-box li { font-size: 9pt; margin-bottom: 3px; }
+  .tag { display: inline-block; background: #000; color: #fff; font-size: 8pt; font-weight: 700; padding: 1px 6px; letter-spacing: 0.05em; vertical-align: middle; }
+  .tag.green { background: #16a34a; }
+  .tag.red { background: #dc2626; }
+  hr { border: none; border-top: 1px solid #ddd; margin: 16px 0; }
+  @media print {
+    body { padding: 0; }
+    h2 { page-break-after: avoid; }
+    .example-block, table { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<h1>TeamUp Cheat Sheet
+  <span>quarterpipe.hamburg — Anleitung fuer den Veranstaltungskalender</span>
+</h1>
+
+<hr>
+
+<h2>Wie die Website Events anzeigt</h2>
+<ul>
+  <li>Zeitraum: <strong>7 Tage zurueck</strong> bis <strong>30 Tage voraus</strong></li>
+  <li>Aktualisierung: <strong>stuendlich</strong> (Cache von 1 Stunde)</li>
+  <li>Vergangene Events werden ausgegraut dargestellt</li>
+  <li>Events mit Startzeit zeigen Datum + Uhrzeit</li>
+  <li>Ganztagesevents zeigen nur das Datum (keine Uhrzeit)</li>
+</ul>
+
+<h2>Event SOLL auf der Website erscheinen</h2>
+
+<h3>Pflichtfelder</h3>
+<table>
+  <tr><th>Feld</th><th>Was eintragen</th><th>Beispiel</th></tr>
+  <tr><td><strong>Titel</strong></td><td>Aussagekraeftiger Name</td><td><code>Konzert: Valborg &amp; ABEST</code></td></tr>
+  <tr><td><strong>Startzeit</strong></td><td>Datum + Uhrzeit (kein Ganztagesevent!)</td><td><code>23.05.2026, 20:00</code></td></tr>
+  <tr><td><strong>Veranstalter*in</strong></td><td><code>amigo_</code> oder <code>extern</code></td><td>Kein Wert mit &bdquo;geschlossen&ldquo;</td></tr>
+</table>
+
+<h3>Empfohlene Felder</h3>
+<table>
+  <tr><th>Feld</th><th>Was eintragen</th><th>Anzeige auf der Website</th></tr>
+  <tr><td><strong>Location</strong></td><td>Kurze Zusatzinfo</td><td>Untertitel neben Datum</td></tr>
+  <tr><td><strong>Notes</strong></td><td>Beschreibungstext</td><td>Beim Aufklappen sichtbar (Plaintext)</td></tr>
+  <tr><td><strong>Anhang</strong></td><td>Eventbild (jpg, png, webp)</td><td>Beim Aufklappen als Bild angezeigt</td></tr>
+</table>
+
+<h3>Bild hinzufuegen</h3>
+<ol>
+  <li>Event oeffnen &rarr; <strong>Anhang hinzufuegen</strong> (Bueroklammer-Icon)</li>
+  <li>Bilddatei hochladen (jpg, png, webp, gif, avif oder svg)</li>
+  <li>Das <strong>erste</strong> Bild wird auf der Website angezeigt</li>
+  <li>Weitere Anhaenge (PDFs etc.) werden ignoriert</li>
+</ol>
+<div class="hint"><strong>Wichtig:</strong> Bilder als <strong>Anhang</strong> hochladen, nicht in die Kommentare posten!</div>
+
+<h3>Beispiel: vollstaendiges Event</h3>
+<div class="example-block">Titel:      Konzert: Speedway
+Start:      28.05.2026, 20:00
+Ende:       28.05.2026, 23:00
+Location:   Hardcore Punk aus Hamburg
+Notes:      Support: TBA. Einlass ab 19:30, Beginn 20:00.
+            VVK 12 EUR / AK 15 EUR
+Veranst.:   extern
+Anhang:     speedway-flyer.jpg</div>
+
+<h2>Event soll NICHT auf der Website erscheinen</h2>
+
+<h3>Weg 1: Veranstalter*in auf &bdquo;geschlossen&ldquo; setzen</h3>
+<p>Events werden <strong>automatisch ausgeblendet</strong>, wenn das Custom-Feld <strong>Veranstalter*in</strong> einen Wert mit <code>geschlossen</code> enthaelt:</p>
+<ul>
+  <li><code>extern_geschlossen</code> &mdash; externe geschlossene Veranstaltung (z.B. Geburtstage)</li>
+  <li><code>amigo_geschlossen</code> &mdash; interne geschlossene Veranstaltung</li>
+</ul>
+
+<table>
+  <tr><th>Event</th><th>Veranstalter*in</th><th>Website</th></tr>
+  <tr><td>18. Geb Clara</td><td><code>extern_geschlossen</code></td><td><span class="tag red">versteckt</span></td></tr>
+  <tr><td>Seminar Cathy</td><td><code>extern_geschlossen</code></td><td><span class="tag red">versteckt</span></td></tr>
+  <tr><td>Konzert: Speedway</td><td><code>extern</code></td><td><span class="tag green">sichtbar</span></td></tr>
+  <tr><td>QP open</td><td><code>amigo_</code></td><td><span class="tag green">sichtbar</span></td></tr>
+</table>
+
+<h3>Weg 2: Filterwoerter im Titel</h3>
+<p>Events werden zusaetzlich ausgeblendet, wenn <strong>Titel</strong> oder <strong>Location</strong> eines dieser Woerter enthalten (Gross-/Kleinschreibung egal):</p>
+<ul>
+  <li><code>Vorlage Veranstaltung</code></li>
+  <li><code>Anfrage</code></li>
+</ul>
+
+<h2>Ganztagesevents &mdash; Achtung</h2>
+<ul>
+  <li>Ganztagesevents funktionieren, zeigen aber <strong>keine Uhrzeit</strong> an</li>
+  <li>Fuer Events mit Einlasszeit: <strong>kein Ganztagesevent</strong> verwenden, sondern konkrete Start-/Endzeit setzen</li>
+  <li>Ganztagesevents eignen sich fuer mehrtaegige Festivals, Aktionstage etc.</li>
+</ul>
+
+<h2>Felder die NICHT auf der Website erscheinen</h2>
+<table>
+  <tr><th>Feld</th><th>Hinweis</th></tr>
+  <tr><td>Kommentare</td><td>Werden ignoriert &mdash; nur Anhang-Bilder werden genutzt</td></tr>
+  <tr><td>Veranstalter*in</td><td>Nur fuer Filter relevant, nicht sichtbar</td></tr>
+  <tr><td>Wer (who)</td><td>Wird ignoriert</td></tr>
+  <tr><td>Wiederholungsregeln</td><td>Einzelne Instanzen werden normal angezeigt</td></tr>
+</table>
+
+<hr>
+
+<h2>Schnellreferenz</h2>
+<div class="quickref">
+  <div class="quickref-box">
+    <h4><span class="tag green">sichtbar</span> auf Website</h4>
+    <ul>
+      <li>Titel ohne Filterwoerter</li>
+      <li>Veranstalter*in: <code>amigo_</code> oder <code>extern</code></li>
+      <li>Startzeit setzen (kein Ganztagesevent)</li>
+      <li>Location = Untertitel</li>
+      <li>Notes = Beschreibung (aufklappbar)</li>
+      <li>Anhang = Eventbild (erstes Bild zaehlt)</li>
+    </ul>
+  </div>
+  <div class="quickref-box hidden-box">
+    <h4><span class="tag red">versteckt</span> auf Website</h4>
+    <ul>
+      <li>Veranstalter*in enthaelt &bdquo;geschlossen&ldquo;<br>(<code>extern_geschlossen</code> / <code>amigo_geschlossen</code>)</li>
+      <li>&bdquo;Anfrage&ldquo; im Titel oder Location</li>
+      <li>&bdquo;Vorlage Veranstaltung&ldquo; im Titel oder Location</li>
+    </ul>
+  </div>
+</div>
+
+</body>
+</html>

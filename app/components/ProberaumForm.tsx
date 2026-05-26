@@ -5,7 +5,7 @@ import { useState } from 'react';
 type Status = 'idle' | 'sending' | 'sent' | 'error';
 
 const fieldClass = 'bg-transparent outline-none text-2xl md:text-3xl font-black placeholder:opacity-20 w-full';
-const labelClass = 'font-mono text-[10px] tracking-[0.3em] uppercase opacity-40';
+const labelClass = 'font-mono text-xs md:text-sm tracking-[0.2em] uppercase opacity-50';
 
 export function ProberaumForm() {
   const [status, setStatus] = useState<Status>('idle');
@@ -35,7 +35,7 @@ export function ProberaumForm() {
           onClick={() => setOpen(true)}
           className="border-4 border-black px-8 py-5 text-xl md:text-2xl font-black italic hover:bg-black hover:text-white transition-all"
         >
-          Anfrageformular öffnen
+          Proberaum anfragen
         </button>
       </div>
     );
@@ -44,8 +44,8 @@ export function ProberaumForm() {
   if (status === 'sent') {
     return (
       <div className="px-8 md:px-16 py-24 flex flex-col gap-4">
-        <p className="text-3xl md:text-5xl font-black italic tracking-tighter">Anfrage erhalten!</p>
-        <p className="font-mono text-sm opacity-50 tracking-widest uppercase">Wir melden uns bald bei dir.</p>
+        <p className="text-3xl md:text-5xl font-black italic tracking-tighter">Proberaum-Anfrage erhalten!</p>
+        <p className="font-mono text-sm opacity-50 tracking-widest uppercase">Wir melden uns zeitnah bei dir.</p>
       </div>
     );
   }
@@ -55,23 +55,23 @@ export function ProberaumForm() {
       <div className="grid grid-cols-1 md:grid-cols-2 border-b-4 border-black">
         <div className="flex flex-col gap-3 py-8 md:py-10 md:pr-12 border-b-4 md:border-b-0 md:border-r-4 border-black">
           <span className={labelClass}>01 — Name *</span>
-          <input name="name" type="text" required placeholder="Vor- und Nachname" className={fieldClass} />
+          <input name="name" type="text" required placeholder="Vor- und Nachname" title="Dein vollständiger Name" className={fieldClass} />
         </div>
         <div className="flex flex-col gap-3 py-8 md:py-10 md:pl-12">
           <span className={labelClass}>02 — E-Mail *</span>
-          <input name="email" type="email" required placeholder="deine@email.de" className={fieldClass} />
+          <input name="email" type="email" required placeholder="deine@email.de" title="Unter dieser Adresse antworten wir dir" className={fieldClass} />
         </div>
       </div>
 
       <div className="flex flex-col gap-3 py-8 md:py-10 border-b-4 border-black">
         <span className={labelClass}>03 — Betreff *</span>
-        <input name="subject" type="text" required placeholder="Worum geht es?" className={fieldClass} />
+        <input name="subject" type="text" required placeholder="Worum geht es?" title="z.B. Name deiner Band oder deines Projekts" className={fieldClass} />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 border-b-4 border-black">
         <div className="flex flex-col gap-3 py-8 md:py-10 md:pr-12 border-b-4 md:border-b-0 md:border-r-4 border-black">
           <span className={labelClass}>04 — Nutzungsart</span>
-          <select name="usageType" className="bg-transparent outline-none text-2xl md:text-3xl font-black appearance-none cursor-pointer w-full">
+          <select name="usageType" title="Wofür möchtest du den Proberaum nutzen?" className="bg-transparent outline-none text-2xl md:text-3xl font-black appearance-none cursor-pointer w-full">
             <option value="">Bitte wählen</option>
             <option>Bandprobe</option>
             <option>Unterricht</option>
@@ -80,7 +80,7 @@ export function ProberaumForm() {
         </div>
         <div className="flex flex-col gap-3 py-8 md:py-10 md:pl-12">
           <span className={labelClass}>05 — Anzahl Personen</span>
-          <select name="personCount" className="bg-transparent outline-none text-2xl md:text-3xl font-black appearance-none cursor-pointer w-full">
+          <select name="personCount" title="Wie viele Leute proben zusammen?" className="bg-transparent outline-none text-2xl md:text-3xl font-black appearance-none cursor-pointer w-full">
             <option value="">Bitte wählen</option>
             <option>1–2</option>
             <option>3–5</option>
@@ -92,12 +92,12 @@ export function ProberaumForm() {
 
       <div className="flex flex-col gap-3 py-8 md:py-10 border-b-4 border-black">
         <span className={labelClass}>06 — Wunschtermin (Tag, Uhrzeit, Häufigkeit) *</span>
-        <input name="schedule" type="text" required placeholder="z.B. Dienstags 18–21 Uhr, wöchentlich" className={fieldClass} />
+        <input name="schedule" type="text" required placeholder="z.B. Dienstags 18–21 Uhr, wöchentlich" title="Wann und wie oft möchtest du den Raum nutzen?" className={fieldClass} />
       </div>
 
       <div className="flex flex-col gap-3 py-8 md:py-10 border-b-4 border-black">
         <span className={labelClass}>07 — Detaillierte Mietanfrage *</span>
-        <textarea name="details" rows={3} required placeholder="Erzähl uns mehr über dein Projekt…"
+        <textarea name="details" rows={3} required placeholder="Erzähl uns mehr über dein Projekt…" title="Equipment, besondere Anforderungen, Lautstärke…"
           className="bg-transparent outline-none text-2xl md:text-3xl font-black placeholder:opacity-20 resize-none w-full" />
       </div>
 
@@ -119,7 +119,7 @@ export function ProberaumForm() {
             disabled={status === 'sending'}
             className="border-4 border-black px-8 py-5 text-xl md:text-2xl font-black italic hover:bg-black hover:text-white transition-all shrink-0 disabled:opacity-40"
           >
-            {status === 'sending' ? 'Wird gesendet…' : 'Anfrage senden'}
+            {status === 'sending' ? 'Wird gesendet…' : 'Proberaum-Anfrage senden'}
           </button>
         </div>
       </div>

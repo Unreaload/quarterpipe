@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import type { TeamUpEvent } from '../lib/teamup';
 
 export function EventList({ events, today }: { events: TeamUpEvent[]; today: string }) {
@@ -27,10 +28,12 @@ export function EventList({ events, today }: { events: TeamUpEvent[]; today: str
               <span className="font-mono text-sm md:text-base tracking-[0.2em] uppercase opacity-50">
                 {event.date.split('-').reverse().slice(0, 2).join('.')}
               </span>
-              <span className="font-mono text-sm md:text-base opacity-30">—</span>
-              <span className="font-mono text-sm md:text-base tracking-[0.2em] uppercase opacity-50">
-                {event.time} Uhr
-              </span>
+              {event.time && <>
+                <span className="font-mono text-sm md:text-base opacity-30">—</span>
+                <span className="font-mono text-sm md:text-base tracking-[0.2em] uppercase opacity-50">
+                  {event.time} Uhr
+                </span>
+              </>}
               {event.sub && <>
                 <span className="font-mono text-sm md:text-base opacity-30">—</span>
                 <span className="font-mono text-sm md:text-base tracking-[0.2em] uppercase opacity-50">{event.sub}</span>
@@ -40,9 +43,23 @@ export function EventList({ events, today }: { events: TeamUpEvent[]; today: str
               )}
             </div>
 
-            {isExpanded && event.description && (
-              <div className="mt-6 font-mono text-sm md:text-base leading-relaxed opacity-70 whitespace-pre-line text-right">
-                {event.description}
+            {isExpanded && (event.description || event.imageUrl) && (
+              <div className="mt-6 flex flex-col items-end gap-4">
+                {event.imageUrl && (
+                  <Image
+                    src={event.imageUrl}
+                    alt={event.title}
+                    width={480}
+                    height={480}
+                    sizes="(max-width: 768px) 100vw, 480px"
+                    className="w-full max-w-md h-auto object-cover"
+                  />
+                )}
+                {event.description && (
+                  <div className="font-mono text-sm md:text-base leading-relaxed opacity-70 whitespace-pre-line text-right">
+                    {event.description}
+                  </div>
+                )}
               </div>
             )}
           </div>

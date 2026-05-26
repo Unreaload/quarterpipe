@@ -50,10 +50,15 @@ export async function POST(request: Request) {
   const smtpHost = process.env.SMTP_HOST;
   const smtpUser = process.env.SMTP_USER;
   const smtpPass = process.env.SMTP_PASS;
-  const contactEmail = process.env.CONTACT_EMAIL;
+
+  const contactMap: Record<string, string | undefined> = {
+    'Raumanfrage': process.env.CONTACT_EMAIL_BOOKING,
+    'Proberaum-Anfrage': process.env.CONTACT_EMAIL_PROBERAUM,
+  };
+  const contactEmail = contactMap[data.formType] ?? process.env.CONTACT_EMAIL_BOOKING;
 
   if (!smtpHost || !smtpUser || !smtpPass || !contactEmail) {
-    console.error('Missing SMTP env vars. Required: SMTP_HOST, SMTP_USER, SMTP_PASS, CONTACT_EMAIL');
+    console.error('Missing SMTP env vars. Required: SMTP_HOST, SMTP_USER, SMTP_PASS, CONTACT_EMAIL_BOOKING, CONTACT_EMAIL_PROBERAUM');
     return NextResponse.json({ error: 'Server not configured for email' }, { status: 503 });
   }
 

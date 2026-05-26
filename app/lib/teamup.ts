@@ -1,10 +1,12 @@
 export interface TeamUpEvent {
   id: string;
   date: string;  // YYYY-MM-DD
-  time: string;  // HH:MM
+  time: string;  // HH:MM or "" for all-day
+  allDay: boolean;
   title: string;
   sub: string;
   description: string;
+  imageUrl: string;
 }
 
 export async function fetchEvents(): Promise<TeamUpEvent[]> {
@@ -35,28 +37,58 @@ export async function fetchEvents(): Promise<TeamUpEvent[]> {
 
   const data = await res.json();
 
-  const events: TeamUpEvent[] = (data.events ?? []).map((e: {
+  interface RawEvent {
     id: string;
     title: string;
+    all_day: boolean;
     start_dt: string;
     notes?: string;
     location?: string;
-  }) => {
-    const dt = new Date(e.start_dt);
-    const notes = e.notes ?? '';
-    return {
-      id: e.id,
-      date: dt.toISOString().split('T')[0],
-      time: dt.toTimeString().slice(0, 5),
-      title: e.title,
-      sub: e.location ?? notes.split('\n')[0] ?? '',
-      description: notes,
-    };
+    attachments?: { name?: string; mimetype?: string; link?: string; preview?: string; thumbnail?: string }[];
+    custom?: { veranstalter_in?: string[] };
+  }
+
+  const rawEvents: RawEvent[] = data.events ?? [];
+
+  const visible = rawEvents.filter(e => {
+    const text = `${e.title} ${e.location ?? ''}`.toLowerCase();
+    if (text.includes('vorlage veranstaltung') || text.includes('anfrage')) return false;
+    const veranstalter = e.custom?.veranstalter_in ?? [];
+    if (veranstalter.some(v => v.includes('geschlossen'))) return false;
+    return true;
   });
 
-  const filtered = events.filter(e => {
-    const text = `${e.title} ${e.sub}`.toLowerCase();
-    return !text.includes('vorlage veranstaltung') && !text.includes('anfrage');
+  const filtered: TeamUpEvent[] = visible.map(e => {
+    const allDay = !!e.all_day;
+    let date: string;
+    let time: string;
+
+    if (allDay) {
+      date = e.start_dt.slice(0, 10);
+      time = '';
+    } else {
+      const dt = new Date(e.start_dt);
+      date = dt.toISOString().split('T')[0];
+      time = dt.toTimeString().slice(0, 5);
+    }
+
+    const notes = e.notes ?? '';
+    const notesText = notes.replace(/<[^>]*>/g, '').trim();
+
+    const imageAttachment = (e.attachments ?? []).find(
+      a => a.mimetype?.startsWith('image/')
+    );
+
+    return {
+      id: e.id,
+      date,
+      time,
+      allDay,
+      title: e.title,
+      sub: e.location ?? notesText.split('\n')[0] ?? '',
+      description: notesText,
+      imageUrl: imageAttachment?.preview ?? imageAttachment?.link ?? '',
+    };
   });
 
   filtered.sort((a, b) => `${a.date}${a.time}`.localeCompare(`${b.date}${b.time}`));

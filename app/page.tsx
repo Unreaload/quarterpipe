@@ -5,6 +5,7 @@ import { SkaterDivider } from './components/SkaterDivider';
 import { MapEmbed } from './components/MapEmbed';
 import { MietenForm } from './components/MietenForm';
 import { ProberaumForm } from './components/ProberaumForm';
+import { DiscoLights } from './components/DiscoLights';
 import { fetchEvents } from './lib/teamup';
 import type { TeamUpEvent } from './lib/teamup';
 
@@ -23,6 +24,7 @@ export default async function Home() {
   return (
     <main className="w-full max-w-[100vw] bg-white text-black selection:bg-black selection:text-white overflow-clip font-sans">
 
+      <DiscoLights />
       <Header />
 
       {/* Hero Spacer */}

@@ -228,6 +228,7 @@ export async function fetchEvents(): Promise<TeamUpEvent[]> {
         time: startTime,
         endTime,
         allDay,
+        einlass,
         title,
         sub,
         description,

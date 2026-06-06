@@ -19,7 +19,7 @@ export default function Datenschutz() {
         <section className="flex flex-col gap-4 border-b-4 border-black pb-12">
           <h2 className="font-mono text-[10px] tracking-[0.4em] uppercase opacity-40">1. Verantwortliche Stelle</h2>
           <p className="text-xl md:text-2xl font-black leading-snug">
-            AMIGO* e.V.<br />
+            AMiGO* e.V.<br />
             Versmannstraße 66<br />
             20457 Hamburg
           </p>

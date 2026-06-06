@@ -19,7 +19,7 @@ export default function Impressum() {
         <section className="flex flex-col gap-4 border-b-4 border-black pb-12">
           <h2 className="font-mono text-[10px] tracking-[0.4em] uppercase opacity-40">Angaben gemäß § 5 TMG</h2>
           <p className="text-xl md:text-2xl font-black leading-snug">
-            AMIGO* e.V.<br />
+            AMiGO* e.V.<br />
             Versmannstraße 66<br />
             20457 Hamburg
           </p>
@@ -33,7 +33,7 @@ export default function Impressum() {
             3. Vorsitzende: Elke Fesefeldt
           </p>
           <p className="font-mono text-sm opacity-60">
-            Alle c/o AMIGO* e.V., Versmannstraße 66, 20457 Hamburg
+            Alle c/o AMiGO* e.V., Versmannstraße 66, 20457 Hamburg
           </p>
         </section>
 
@@ -51,7 +51,7 @@ export default function Impressum() {
           <h2 className="font-mono text-[10px] tracking-[0.4em] uppercase opacity-40">Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV</h2>
           <p className="text-xl md:text-2xl font-black leading-snug">
             Catherina Ungerer<br />
-            c/o AMIGO* e.V.<br />
+            c/o AMiGO* e.V.<br />
             Versmannstraße 66, 20457 Hamburg
           </p>
         </section>

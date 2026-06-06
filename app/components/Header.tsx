@@ -7,7 +7,7 @@ const navLinks = [
   { href: '#raum',      label: 'Der Raum',  num: '02' },
   { href: '#mieten',    label: 'Mieten',    num: '03' },
   { href: '#proberaum', label: 'Proberaum', num: '04' },
-  { href: '#amigo',     label: 'Amigo*',    num: '05' },
+  { href: '#amigo',     label: 'AMiGO*',    num: '05' },
   { href: '#anfahrt',   label: 'Anfahrt',   num: '06' },
 ];
 

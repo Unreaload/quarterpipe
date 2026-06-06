@@ -52,7 +52,7 @@ export default async function Home() {
         <div className="flex flex-col min-w-0 w-full pl-4 md:pl-8 lg:pl-12 z-10 pb-32 md:pb-48">
           <section className="w-full flex flex-col items-end pt-20 pointer-events-auto">
             <header className="mb-16 md:mb-24 text-right w-full">
-              <img src="/images/Programm.jpg" alt="Aktuelles Programm" className="w-full max-w-[600px] ml-auto border-b-[8px] md:border-b-[16px] border-black" />
+              <img src="/images/Programm.svg" alt="Aktuelles Programm" className="w-full max-w-[600px] ml-auto border-b-[8px] md:border-b-[16px] border-black" />
             </header>
 
             <div className="w-full flex flex-col items-end text-right">
@@ -77,7 +77,7 @@ export default async function Home() {
       >
         {/* Left: text */}
         <div className="flex-1 px-8 md:px-16 py-20 md:py-32 flex flex-col gap-10 md:gap-14">
-          <img src="/images/Partylocation.jpg" alt="Mehr als ein Raum" className="w-full max-w-[500px]" />
+          <img src="/images/Partylocation.svg" alt="Mehr als ein Raum" className="w-full max-w-[500px]" />
           <p className="text-xl md:text-2xl lg:text-3xl font-bold leading-[1.2] opacity-90">
             Hier treffen sich Skater*innen, Kreative, Musiker*innen und Nachbar*innen, um gemeinsam aktiv zu werden. Ob für Indoor-Skaten, Konzerte oder Workshops – die Quarterpipe steht für Austausch, Ideen und besondere Momente.
           </p>
@@ -121,7 +121,7 @@ export default async function Home() {
 
         <div className="flex-1 flex flex-col">
           <div className="px-8 md:px-16 pt-16 md:pt-24 pb-10 border-b-4 border-black">
-            <img src="/images/Mieten.jpg" alt="Mieten" className="w-full max-w-[400px] mb-4" />
+            <img src="/images/Mieten.svg" alt="Mieten" className="w-full max-w-[400px] mb-4" />
             <p className="text-base md:text-lg font-bold opacity-60 leading-snug">
               Konzerte, Workshops, Sportkurse, Lesungen, Geburtstage – viel Platz, eine kleine Küche, eine Bar und flexible Raumgestaltung.
             </p>
@@ -139,7 +139,7 @@ export default async function Home() {
       >
         <div className="flex-1 flex flex-col">
           <div className="px-8 md:px-16 pt-16 md:pt-24 pb-10 border-b-4 border-black">
-            <img src="/images/Proberaum.jpg" alt="Proberaum" className="w-full max-w-[400px] mb-4" />
+            <img src="/images/Proberaum.svg" alt="Proberaum" className="w-full max-w-[400px] mb-4" />
             <p className="text-base md:text-lg font-bold opacity-60 leading-snug">
               Absorber, Molton, Lamellenvorhang – alles was für eine gelungene Jam-Session nötig ist. Für Bands, Solo-Projekte, Unterricht und Workshops.
             </p>
@@ -166,15 +166,15 @@ export default async function Home() {
         <div className="flex-1">
           <img
             src="/images/Wohnprojekt_Bild.jpeg"
-            alt="Amigo* Wohnprojekt"
+            alt="AMiGO* Wohnprojekt"
             className="w-full h-full object-cover"
           />
         </div>
 
         <div className="flex-1 flex flex-col px-8 md:px-16 py-20 md:py-32 gap-10 md:gap-14 bg-black text-white">
-          <img src="/images/Wohnprojekt.jpg" alt="Amigo* Wohnprojekt" className="w-full max-w-[500px]" />
+          <img src="/images/Wohnprojekt.svg" alt="AMiGO* Wohnprojekt" className="w-full max-w-[500px]" />
           <p className="text-xl md:text-2xl lg:text-3xl font-bold leading-[1.25] opacity-90">
-            Die Quarterpipe ist Teil des Amigo* Wohnprojekts in der Hafencity – einem gemeinschaftlichen Ort, der Wohnen, Kultur und Begegnung zusammendenkt.
+            Die Quarterpipe ist Teil des AMiGO* Wohnprojekts in der Hafencity – <strong>A</strong>ktives <strong>Mi</strong>teinander in der <strong>G</strong>ro&szlig;stadt<strong>o</strong>ase. Ein gemeinschaftlicher Ort, der Wohnen, Kultur und Begegnung zusammendenkt.
           </p>
           <p className="text-base md:text-lg font-mono opacity-60 leading-relaxed tracking-wide">
             Ein Ort, an dem Nachbarschaft gelebt wird – mit gemeinsamen Räumen, geteilter Verantwortung und der Überzeugung, dass gutes Zusammenleben kein Zufall ist. Wir freuen uns, wenn du vorbeischaust.
@@ -190,7 +190,7 @@ export default async function Home() {
         className="scroll-mt-[30vh] split-section flex flex-col"
       >
         <div className="flex-1 px-8 md:px-20 lg:px-28 py-20 md:py-32 flex flex-col gap-10">
-          <img src="/images/Anfahrt.jpg" alt="Anfahrt" className="w-full max-w-[500px]" />
+          <img src="/images/Anfahrt.svg" alt="Anfahrt" className="w-full max-w-[500px]" />
           <img src="/images/Lageplan.png" alt="Lageplan Quarterpipe" className="w-full" />
         </div>
 

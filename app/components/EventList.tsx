@@ -3,6 +3,16 @@
 import { useState } from 'react';
 import type { TeamUpEvent } from '../lib/teamup';
 
+function linkify(text: string) {
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+  const parts = text.split(urlRegex);
+  return parts.map((part, i) =>
+    urlRegex.test(part) ? (
+      <a key={i} href={part} target="_blank" rel="noopener noreferrer" className="underline hover:opacity-60 transition-opacity">{part}</a>
+    ) : part
+  );
+}
+
 export function EventList({ events, today }: { events: TeamUpEvent[]; today: string }) {
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
 
@@ -55,7 +65,7 @@ export function EventList({ events, today }: { events: TeamUpEvent[]; today: str
               )}
               {isExpanded && event.description && (
                 event.description.split('\n').map((line, i) => (
-                  <span key={i} className="font-mono text-sm md:text-base tracking-[0.2em] opacity-80">{line}</span>
+                  <span key={i} className="font-mono text-sm md:text-base tracking-[0.2em] opacity-80">{linkify(line)}</span>
                 ))
               )}
               {isExpanded && event.imageUrl && (

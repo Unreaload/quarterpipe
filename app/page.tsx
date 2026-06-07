@@ -5,6 +5,7 @@ import { MapEmbed } from './components/MapEmbed';
 import { MietenForm } from './components/MietenForm';
 import { ProberaumForm } from './components/ProberaumForm';
 import { DiscoLights } from './components/DiscoLights';
+import { Barrierefreiheit } from './components/Barrierefreiheit';
 import { fetchEvents } from './lib/teamup';
 import type { TeamUpEvent } from './lib/teamup';
 
@@ -81,14 +82,7 @@ export default async function Home() {
           <p className="text-xl md:text-2xl lg:text-3xl font-bold leading-[1.2] opacity-90">
             Hier treffen sich Skater*innen, Kreative, Musiker*innen und Nachbar*innen, um gemeinsam aktiv zu werden. Ob für Indoor-Skaten, Konzerte oder Workshops – die Quarterpipe steht für Austausch, Ideen und besondere Momente.
           </p>
-          <div className="bg-black text-white p-6 md:p-8 border-4 border-dashed border-white/30" style={{ transform: 'rotate(0.6deg)' }}>
-            <h4 className="font-black italic text-xl md:text-3xl mb-4 tracking-tighter">
-              Hinweis zur Barrierefreiheit
-            </h4>
-            <p className="font-mono text-xs md:text-sm tracking-widest leading-relaxed opacity-80">
-              Wir wünschen uns, dass alle Menschen an unseren Veranstaltungen teilhaben können. Leider sind unsere Räumlichkeiten derzeit (noch) nicht barrierearm und daher für manche Personen – zum Beispiel Menschen, die einen Rollstuhl oder andere Mobilitätshilfen nutzen – nur eingeschränkt zugänglich. Wenn du Fragen zur Zugänglichkeit hast, melde dich gerne vorab bei uns unter <a href="mailto:moin@wirsindamigo.de" className="underline hover:opacity-60 transition-opacity">moin@wirsindamigo.de</a>. Wir bemühen uns, gemeinsam mit dir eine passende Lösung zu finden.
-            </p>
-          </div>
+          <Barrierefreiheit />
         </div>
 
         {/* Right: video */}

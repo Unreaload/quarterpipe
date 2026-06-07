@@ -34,7 +34,7 @@ export function SkaterDivider({ female = false }: { female?: boolean }) {
   const kneePhase = Math.sin(progress * Math.PI * 6) * 3;
 
   return (
-    <div ref={ref} className="py-[15rem] relative">
+    <div ref={ref} className="py-[7.5rem] md:py-[15rem] relative">
       <hr className="border-t-4 border-black w-[90%] mx-auto" />
       {/* Skater rides on top of the line */}
       <div

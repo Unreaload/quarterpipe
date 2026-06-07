@@ -111,7 +111,7 @@ export default async function Home() {
         id="mieten"
         className="scroll-mt-[30vh] split-section bg-white text-black flex flex-col"
       >
-        <div className="flex-1 flex items-center justify-center overflow-hidden p-6 md:p-10">
+        <div className="flex-1 flex items-center justify-center overflow-hidden p-6 md:p-10 order-2 md:order-1">
           <img
             src="/images/Miete_Bild.jpeg"
             alt="Mieten"
@@ -119,7 +119,7 @@ export default async function Home() {
           />
         </div>
 
-        <div className="flex-1 flex flex-col">
+        <div className="flex-1 flex flex-col order-1 md:order-2">
           <div className="px-8 md:px-16 pt-16 md:pt-24 pb-10 border-b-4 border-black">
             <img src="/images/Mieten.svg" alt="Mieten" className="w-full max-w-[400px] mb-4" />
             <p className="text-base md:text-lg font-bold opacity-60 leading-snug">
@@ -163,7 +163,7 @@ export default async function Home() {
         id="amigo"
         className="scroll-mt-[30vh] split-section flex flex-col"
       >
-        <div className="flex-1">
+        <div className="flex-1 order-2 md:order-1">
           <img
             src="/images/Wohnprojekt_Bild.jpeg"
             alt="AMiGO* Wohnprojekt"
@@ -171,8 +171,8 @@ export default async function Home() {
           />
         </div>
 
-        <div className="flex-1 flex flex-col px-8 md:px-16 py-20 md:py-32 gap-10 md:gap-14 bg-black text-white">
-          <img src="/images/Wohnprojekt.svg" alt="AMiGO* Wohnprojekt" className="w-full max-w-[500px]" />
+        <div className="flex-1 flex flex-col px-8 md:px-16 py-20 md:py-32 gap-10 md:gap-14 bg-black text-white order-1 md:order-2">
+          <img src="/images/Wohnprojekt.svg" alt="AMiGO* Wohnprojekt" className="w-full max-w-[500px] invert !mix-blend-normal" />
           <p className="text-xl md:text-2xl lg:text-3xl font-bold leading-[1.25] opacity-90">
             Die Quarterpipe ist Teil des AMiGO* Wohnprojekts in der Hafencity – <strong>A</strong>ktives <strong>Mi</strong>teinander in der <strong>G</strong>ro&szlig;stadt<strong>o</strong>ase. Ein gemeinschaftlicher Ort, der Wohnen, Kultur und Begegnung zusammendenkt.
           </p>

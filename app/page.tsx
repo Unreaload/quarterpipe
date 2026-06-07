@@ -86,7 +86,7 @@ export default async function Home() {
               Hinweis zur Barrierefreiheit
             </h4>
             <p className="font-mono text-xs md:text-sm tracking-widest leading-relaxed opacity-80">
-              Die Quarterpipe ist aktuell leider (noch) nicht barrierearm. Wenn du Fragen zur Zugänglichkeit hast, melde dich gerne direkt bei uns und wir suchen gemeinsam nach einer Lösung.
+              Wir wünschen uns, dass alle Menschen an unseren Veranstaltungen teilhaben können. Leider sind unsere Räumlichkeiten derzeit (noch) nicht barrierearm und daher für manche Personen – zum Beispiel Menschen, die einen Rollstuhl oder andere Mobilitätshilfen nutzen – nur eingeschränkt zugänglich. Wenn du Fragen zur Zugänglichkeit hast, melde dich gerne vorab bei uns unter <a href="mailto:moin@wirsindamigo.de" className="underline hover:opacity-60 transition-opacity">moin@wirsindamigo.de</a>. Wir bemühen uns, gemeinsam mit dir eine passende Lösung zu finden.
             </p>
           </div>
         </div>

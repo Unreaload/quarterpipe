@@ -55,7 +55,7 @@ export function EventList({ events, today }: { events: TeamUpEvent[]; today: str
               )}
               {isExpanded && event.description && (
                 event.description.split('\n').map((line, i) => (
-                  <span key={i} className="font-mono text-sm md:text-base tracking-[0.2em] uppercase opacity-50">{line}</span>
+                  <span key={i} className="font-mono text-sm md:text-base tracking-[0.2em] opacity-80">{line}</span>
                 ))
               )}
               {isExpanded && event.imageUrl && (

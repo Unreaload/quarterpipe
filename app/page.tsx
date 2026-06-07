@@ -172,7 +172,7 @@ export default async function Home() {
         </div>
 
         <div className="flex-1 flex flex-col px-8 md:px-16 py-20 md:py-32 gap-10 md:gap-14 bg-black text-white order-1 md:order-2">
-          <img src="/images/Wohnprojekt.svg" alt="AMiGO* Wohnprojekt" className="w-full max-w-[500px] invert !mix-blend-normal" />
+          <img src="/images/Wohnprojekt.svg" alt="AMiGO* Wohnprojekt" className="w-full max-w-[500px]" style={{ filter: 'invert(1)', mixBlendMode: 'normal' }} />
           <p className="text-xl md:text-2xl lg:text-3xl font-bold leading-[1.25] opacity-90">
             Die Quarterpipe ist Teil des AMiGO* Wohnprojekts in der Hafencity – <strong>A</strong>ktives <strong>Mi</strong>teinander in der <strong>G</strong>ro&szlig;stadt<strong>o</strong>ase. Ein gemeinschaftlicher Ort, der Wohnen, Kultur und Begegnung zusammendenkt.
           </p>

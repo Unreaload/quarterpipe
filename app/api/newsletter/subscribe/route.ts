@@ -102,10 +102,8 @@ function confirmationEmailHtml(confirmUrl: string): string {
         <tr><td style="padding:32px 28px;font-family:Helvetica,Arial,sans-serif;color:#000;">
           <p style="margin:0 0 8px;font-size:24px;font-weight:900;font-style:italic;letter-spacing:-0.5px;">Fast geschafft.</p>
           <p style="margin:0 0 24px;font-size:16px;line-height:1.5;">Bestätige deine Anmeldung zum Newsletter mit einem Klick:</p>
-          <table role="presentation" cellpadding="0" cellspacing="0"><tr><td style="background:#000;">
-            <a href="${confirmUrl}" style="display:inline-block;padding:16px 28px;font-family:'Arial Black',Helvetica,Arial,sans-serif;font-weight:900;font-style:italic;font-size:18px;color:#fff;text-decoration:none;border:3px solid #000;">
-              ANMELDUNG BESTÄTIGEN →
-            </a>
+          <table role="presentation" cellpadding="0" cellspacing="0"><tr><td style="background-color:#ffffff;border:3px solid #000000;">
+            <a href="${confirmUrl}" style="display:inline-block;background-color:#ffffff;padding:16px 28px;font-family:'Arial Black',Helvetica,Arial,sans-serif;font-weight:900;font-style:italic;font-size:18px;line-height:1;color:#000000;text-decoration:none;"><span style="color:#000000;text-decoration:none;">ANMELDUNG BESTÄTIGEN →</span></a>
           </td></tr></table>
           <p style="margin:24px 0 0;font-size:12px;line-height:1.5;color:#666;">Der Link ist 24 Stunden gültig. Falls du dich nicht angemeldet hast, ignoriere diese E-Mail einfach – ohne Bestätigung passiert nichts.</p>
         </td></tr>

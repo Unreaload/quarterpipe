@@ -39,3 +39,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# große, ungenutzte Quell-/Rohdateien (nicht ins Repo)
+/public/images/Video_original.MP4
+/public/images/IMG_9233.jpeg
+/public/images/Wohnprojekt.jpeg
+/public/images/image5.jpeg
+/public/images/Unbenannte Anlage 00476.txt

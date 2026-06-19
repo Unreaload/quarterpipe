@@ -3,6 +3,7 @@ import { Header } from './components/Header';
 import { SkaterDivider } from './components/SkaterDivider';
 import { MapEmbed } from './components/MapEmbed';
 import { MietenForm } from './components/MietenForm';
+import { NewsletterForm } from './components/NewsletterForm';
 import { ProberaumForm } from './components/ProberaumForm';
 import { DiscoLights } from './components/DiscoLights';
 import { Barrierefreiheit } from './components/Barrierefreiheit';
@@ -70,6 +71,11 @@ export default async function Home() {
       </div>
 
       <SkaterDivider />
+
+      {/* ── NEWSLETTER ────────────────────────────────────────────────────── */}
+      <NewsletterForm />
+
+      <SkaterDivider female />
 
       {/* ── 2. MEHR ALS EIN RAUM ──────────────────────────────────────────── */}
       <section

@@ -147,11 +147,16 @@ export default async function Home() {
           <ProberaumForm />
         </div>
 
-        <div className="flex-1">
+        <div className="flex-1 flex flex-col">
           <img
-            src="/images/Proberaum.png"
-            alt="Proberaum"
-            className="w-full h-full object-cover"
+            src="/images/Proberaum_weit.jpg"
+            alt="Proberaum – Gesamtansicht"
+            className="w-full object-cover h-64 sm:h-80 md:h-auto md:flex-1 md:min-h-0"
+          />
+          <img
+            src="/images/Proberaum_chill.jpg"
+            alt="Proberaum – Chill-Ecke"
+            className="w-full object-cover h-64 sm:h-80 md:h-auto md:flex-1 md:min-h-0"
           />
         </div>
       </section>

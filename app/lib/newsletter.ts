@@ -54,6 +54,47 @@ export function getBaseUrl(request: Request): string {
 }
 
 /**
+ * Send a transactional email via the Brevo API.
+ * Routes confirmation mail through Brevo's reputable infrastructure instead of
+ * the kasserver SMTP, which improves deliverability (e.g. Yahoo inbox placement).
+ * Sender must be a verified domain/address in Brevo.
+ */
+export async function sendTransactionalEmail(opts: {
+  to: string;
+  subject: string;
+  html: string;
+  text: string;
+}): Promise<void> {
+  const apiKey = process.env.BREVO_API_KEY;
+  if (!apiKey) throw new Error('BREVO_API_KEY missing');
+
+  const senderEmail = process.env.NEWSLETTER_FROM_EMAIL ?? 'moin@wirsindamigo.de';
+  const senderName = process.env.NEWSLETTER_FROM_NAME ?? 'Quarterpipe';
+
+  const res = await fetch('https://api.brevo.com/v3/smtp/email', {
+    method: 'POST',
+    headers: {
+      'api-key': apiKey,
+      'content-type': 'application/json',
+      accept: 'application/json',
+    },
+    body: JSON.stringify({
+      sender: { name: senderName, email: senderEmail },
+      to: [{ email: opts.to }],
+      subject: opts.subject,
+      htmlContent: opts.html,
+      textContent: opts.text,
+    }),
+  });
+
+  // 201 = queued/accepted. Anything else is an error.
+  if (res.status !== 201) {
+    const body = await res.text().catch(() => '');
+    throw new Error(`Brevo transactional send failed ${res.status}: ${body}`);
+  }
+}
+
+/**
  * Add a confirmed subscriber to the Brevo list.
  * updateEnabled lets it re-add an existing contact to the list idempotently.
  * Throws if Brevo is not configured or rejects the request.

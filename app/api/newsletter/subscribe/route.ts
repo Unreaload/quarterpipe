@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
-import nodemailer from 'nodemailer';
-import { createToken, isValidEmail, getBaseUrl } from '../../../lib/newsletter';
+import { createToken, isValidEmail, getBaseUrl, sendTransactionalEmail } from '../../../lib/newsletter';
 
 const rateLimit = new Map<string, number[]>();
 const WINDOW_MS = 15 * 60 * 1000; // 15 minutes
@@ -39,24 +38,13 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Bitte gib eine gültige E-Mail-Adresse ein.' }, { status: 400 });
   }
 
-  const smtpHost = process.env.SMTP_HOST;
-  const smtpUser = process.env.SMTP_USER;
-  const smtpPass = process.env.SMTP_PASS;
-  if (!smtpHost || !smtpUser || !smtpPass || !process.env.NEWSLETTER_SECRET) {
-    console.error('Newsletter not configured. Required: SMTP_HOST, SMTP_USER, SMTP_PASS, NEWSLETTER_SECRET');
+  if (!process.env.BREVO_API_KEY || !process.env.NEWSLETTER_SECRET) {
+    console.error('Newsletter not configured. Required: BREVO_API_KEY, NEWSLETTER_SECRET');
     return NextResponse.json({ error: 'Server not configured for newsletter' }, { status: 503 });
   }
 
   const { exp, token } = createToken(email);
   const confirmUrl = `${getBaseUrl(request)}/newsletter/bestaetigt?email=${encodeURIComponent(email)}&exp=${exp}&token=${encodeURIComponent(token)}`;
-
-  const transporter = nodemailer.createTransport({
-    host: smtpHost,
-    port: Number(process.env.SMTP_PORT ?? 587),
-    secure: process.env.SMTP_SECURE === 'true',
-    auth: { user: smtpUser, pass: smtpPass },
-    tls: { servername: process.env.SMTP_TLS_SERVERNAME || undefined },
-  });
 
   const text = [
     'Fast geschafft!',
@@ -73,8 +61,7 @@ export async function POST(request: Request) {
   ].join('\n');
 
   try {
-    await transporter.sendMail({
-      from: process.env.SMTP_FROM ?? `Quarterpipe <${smtpUser}>`,
+    await sendTransactionalEmail({
       to: email,
       subject: 'Bestätige deine Newsletter-Anmeldung',
       text,

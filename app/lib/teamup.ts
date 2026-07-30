@@ -11,12 +11,17 @@ export interface TeamUpEvent {
   imageUrl: string;
 }
 
-function toDateStr(dt: Date): string {
-  return dt.toISOString().split('T')[0];
+// TeamUp returns start_dt/end_dt as ISO strings with the calendar's own
+// UTC offset, e.g. "2026-07-15T20:00:00+02:00". Read the wall-clock date/time
+// directly from the string so the result does not depend on the server's
+// timezone (new Date(...).toTimeString() would render in server-local time,
+// shifting summer events by 2h on a UTC host).
+function dtDateStr(dt: string): string {
+  return dt.slice(0, 10);
 }
 
-function toTimeStr(dt: Date): string {
-  return dt.toTimeString().slice(0, 5);
+function dtTimeStr(dt: string): string {
+  return dt.slice(11, 16);
 }
 
 function addDays(dateStr: string, n: number): string {
@@ -194,7 +199,7 @@ export async function fetchEvents(): Promise<TeamUpEvent[]> {
 
     // Structured notes with per-day Start/Ende pairs
     if (parsed && parsed.days.length > 0) {
-      const apiDate = allDay ? e.start_dt.slice(0, 10) : toDateStr(new Date(e.start_dt));
+      const apiDate = dtDateStr(e.start_dt);
       for (const day of parsed.days) {
         const date = day.date || apiDate;
         expanded.push({
@@ -214,12 +219,10 @@ export async function fetchEvents(): Promise<TeamUpEvent[]> {
     }
 
     // Fallback: use API start/end times
-    const startDt = new Date(e.start_dt);
-    const endDt = new Date(e.end_dt);
-    const startDateStr = allDay ? e.start_dt.slice(0, 10) : toDateStr(startDt);
-    const endDateStr = allDay ? e.end_dt.slice(0, 10) : toDateStr(endDt);
-    const startTime = allDay ? '' : toTimeStr(startDt);
-    const endTime = allDay ? '' : toTimeStr(endDt);
+    const startDateStr = dtDateStr(e.start_dt);
+    const endDateStr = dtDateStr(e.end_dt);
+    const startTime = allDay ? '' : dtTimeStr(e.start_dt);
+    const endTime = allDay ? '' : dtTimeStr(e.end_dt);
 
     if (startDateStr === endDateStr) {
       expanded.push({

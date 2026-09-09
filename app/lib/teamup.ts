@@ -133,7 +133,7 @@ export async function fetchEvents(): Promise<TeamUpEvent[]> {
   const start = new Date(now);
   start.setDate(start.getDate() - 7);
   const end = new Date(now);
-  end.setDate(end.getDate() + 30);
+  end.setMonth(end.getMonth() + 2);
 
   const startDate = start.toISOString().split('T')[0];
   const endDate = end.toISOString().split('T')[0];

@@ -3,14 +3,26 @@
 import { useState } from 'react';
 import type { TeamUpEvent } from '../lib/teamup';
 
+// Renders "[Bandname](https://…)" as a link on the label, and bare URLs as
+// links on themselves.
 function linkify(text: string) {
-  const urlRegex = /(https?:\/\/[^\s]+)/g;
-  const parts = text.split(urlRegex);
-  return parts.map((part, i) =>
-    urlRegex.test(part) ? (
-      <a key={i} href={part} target="_blank" rel="noopener noreferrer" className="underline hover:opacity-60 transition-opacity">{part}</a>
-    ) : part
-  );
+  const token = /\[([^\]]*)\]\(([^)]+)\)|(https?:\/\/[^\s]+)/g;
+  const nodes: React.ReactNode[] = [];
+  let last = 0;
+  let match: RegExpExecArray | null;
+
+  while ((match = token.exec(text)) !== null) {
+    if (match.index > last) nodes.push(text.slice(last, match.index));
+    const href = match[2] ?? match[3];
+    const label = match[1] || match[3];
+    nodes.push(
+      <a key={match.index} href={href} target="_blank" rel="noopener noreferrer" className="underline hover:opacity-60 transition-opacity">{label}</a>
+    );
+    last = match.index + match[0].length;
+  }
+  if (last < text.length) nodes.push(text.slice(last));
+
+  return nodes;
 }
 
 export function EventList({ events, today }: { events: TeamUpEvent[]; today: string }) {

@@ -24,6 +24,75 @@ function dtTimeStr(dt: string): string {
   return dt.slice(11, 16);
 }
 
+const HTML_ENTITIES: Record<string, string> = {
+  amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ',
+};
+
+function decodeEntities(str: string): string {
+  return str.replace(/&(#x?[0-9a-f]+|[a-z]+);/gi, (whole, body: string) => {
+    if (body[0] === '#') {
+      const code = body[1] === 'x' || body[1] === 'X'
+        ? parseInt(body.slice(2), 16)
+        : parseInt(body.slice(1), 10);
+      return Number.isFinite(code) ? String.fromCodePoint(code) : whole;
+    }
+    return HTML_ENTITIES[body.toLowerCase()] ?? whole;
+  });
+}
+
+// TeamUp's notes are rich text. Links arrive as <a href="…">Text</a>; keep them
+// as "[Text](url)" through the tag stripping so the site can render the label
+// instead of the raw URL.
+function htmlToText(html: string): string {
+  return html
+    .replace(
+      /<a\b[^>]*\bhref=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi,
+      (_whole, href: string, label: string) => {
+        const text = label.replace(/<[^>]*>/g, '').trim();
+        return `[${text || href}](${href})`;
+      }
+    )
+    .replace(/<br\s*\/?>/gi, '\n')
+    .replace(/<\/p>/gi, '\n')
+    .replace(/<[^>]*>/g, '')
+    .split('\n')
+    .map(line => decodeEntities(line).trimEnd())
+    .join('\n')
+    .trim();
+}
+
+const STRUCTURE_KEYS = /^(Titel|Start|Ende|Einlass|Location|Notes|Anhang)$/i;
+
+// A label line followed by a line of nothing but links collapses into one
+// clickable label, so
+//     Link Liese Lux:
+//     [https://instagram.com/liese_lux](https://instagram.com/liese_lux)
+// becomes "[Liese Lux](https://instagram.com/liese_lux)". TeamUp writes one
+// <p> per line, so the two may be separated by blank lines.
+function collapseLinkLabels(text: string): string {
+  const lines = text.split('\n');
+  const out: string[] = [];
+
+  for (let i = 0; i < lines.length; i++) {
+    const label = lines[i].trim().match(/^(?:link\s+)?(.+?)\s*:$/i);
+
+    let j = i + 1;
+    while (j < lines.length && !lines[j].trim()) j++;
+    const target = j < lines.length ? lines[j].trim() : '';
+    const firstLink = target.match(/\[([^\]]*)\]\(([^)]+)\)/);
+    const onlyLinks = !!target && target.replace(/\[[^\]]*\]\([^)]+\)/g, '').trim() === '';
+
+    if (label && !STRUCTURE_KEYS.test(label[1]) && firstLink && onlyLinks) {
+      out.push(`[${label[1]}](${firstLink[2]})`);
+      i = j;
+      continue;
+    }
+    out.push(lines[i]);
+  }
+
+  return out.join('\n');
+}
+
 function addDays(dateStr: string, n: number): string {
   const d = new Date(dateStr + 'T12:00:00Z');
   d.setUTCDate(d.getUTCDate() + n);
@@ -180,11 +249,7 @@ export async function fetchEvents(): Promise<TeamUpEvent[]> {
   for (const e of visible) {
     const allDay = !!e.all_day;
     const notes = e.notes ?? '';
-    const notesText = notes
-      .replace(/<br\s*\/?>/gi, '\n')
-      .replace(/<\/p>/gi, '\n')
-      .replace(/<[^>]*>/g, '')
-      .trim();
+    const notesText = collapseLinkLabels(htmlToText(notes));
 
     const parsed = parseStructuredNotes(notesText);
     const imageAttachment = (e.attachments ?? []).find(

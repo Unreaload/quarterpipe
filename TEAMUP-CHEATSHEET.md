@@ -7,8 +7,8 @@ damit sie korrekt auf der Website erscheinen (oder bewusst nicht).
 
 ## Wie die Website Events anzeigt
 
-- Zeitraum: **7 Tage zurück** bis **30 Tage voraus**
-- Aktualisierung: **stündlich** (Cache von 1 Stunde)
+- Zeitraum: **7 Tage zurück** bis **2 Monate voraus**
+- Aktualisierung: alle **15 Minuten** (Cache)
 - Vergangene Events werden ausgegraut dargestellt
 - Events mit Startzeit zeigen Datum + Uhrzeit
 - Ganztagesevents zeigen nur das Datum
@@ -29,8 +29,32 @@ damit sie korrekt auf der Website erscheinen (oder bewusst nicht).
 | Feld           | Was eintragen                                          | Anzeige auf der Website              |
 |----------------|--------------------------------------------------------|--------------------------------------|
 | **Location**   | Kurze Zusatzinfo (Untertitel)                          | Wird als Subtitel neben Datum gezeigt |
-| **Notes**      | Beschreibungstext (wird beim Aufklappen angezeigt)     | Plaintext, HTML-Tags werden entfernt |
+| **Notes**      | Beschreibungstext (wird beim Aufklappen angezeigt)     | Plaintext, Formatierung wird entfernt — Links bleiben erhalten |
 | **Anhang**     | Eventbild (jpg, png, webp)                             | Wird beim Aufklappen des Events gezeigt |
+
+### Links in den Notes
+
+Damit auf der Website nicht die lange URL steht, sondern ein klickbarer
+Name (z.B. der Bandname), gibt es zwei Wege:
+
+**Weg 1 — Beschriftung in die Zeile darueber (empfohlen):**
+
+```
+Link Liese Lux:
+https://www.instagram.com/liese_lux
+```
+
+Die Zeile davor muss auf einen Doppelpunkt enden und darunter darf nur
+der Link stehen. Auf der Website erscheint dann nur **Liese Lux** als
+klickbarer Text. Das `Link ` am Anfang ist optional — `Liese Lux:` tut es auch.
+
+**Weg 2 — Linktext direkt in TeamUp setzen:**
+
+Text markieren (z.B. `Liese Lux`), dann ueber den Link-Button die URL
+hinterlegen. Der gesetzte Linktext wird 1:1 auf der Website uebernommen.
+
+> Steht ein Link ohne Beschriftung irgendwo im Text, wird weiterhin die
+> volle URL angezeigt — das ist dann so gewollt.
 
 ### Bild hinzufuegen
 

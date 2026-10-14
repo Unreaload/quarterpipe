@@ -114,6 +114,20 @@ export function HighlightSlide({ event: e, today }: { event: FrameEvent; today: 
   );
 }
 
+export function QrSlide({ qr, title, caption }: { qr: string; title?: string; caption?: string }) {
+  return (
+    <div style={s.qr}>
+      <div style={s.qrText}>
+        <div style={s.kicker}>Hamburg // Hafencity</div>
+        {title && <div style={s.qrTitle}>{title}</div>}
+        {caption && <div style={s.qrCaption}>{caption}</div>}
+      </div>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={qr} alt="" style={s.qrCode} />
+    </div>
+  );
+}
+
 const anton = 'var(--font-anton), Impact, sans-serif';
 const barlow = 'var(--font-barlow), "Arial Narrow", sans-serif';
 const dashed = '2px dashed rgba(255,255,255,0.25)';
@@ -249,6 +263,33 @@ const s: Record<string, React.CSSProperties> = {
     opacity: 0.4,
     marginTop: '4vh',
   },
+  qr: {
+    position: 'absolute',
+    inset: 0,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '6vw',
+    padding: '8vh 6vw',
+    color: '#fff',
+  },
+  qrText: { maxWidth: '45vw' },
+  qrTitle: {
+    fontFamily: anton,
+    fontSize: '10vh',
+    lineHeight: 1,
+    textTransform: 'uppercase',
+    margin: '2vh 0 0',
+  },
+  qrCaption: { fontFamily: barlow, fontSize: '4.5vh', opacity: 0.7, marginTop: '3vh' },
+  qrCode: {
+    height: '62vh',
+    aspectRatio: '1',
+    background: '#fff',
+    filter: 'none',
+    mixBlendMode: 'normal',
+  },
+
   // filter/mixBlendMode heben den Xerox-Look aus globals.css auf
   flyer: {
     height: '100%',

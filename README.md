@@ -33,6 +33,7 @@ This project uses [`next/font`](https://nextjs.org/docs/app/building-your-applic
 | `video` | `src`  | Stumm. Ohne `duration` bis zum Videoende, mit `duration` in Schleife bis Zeitablauf. MP4/H.264, max. 1080p |
 | `page`  | `src`  | Eigene Route als iframe, z. B. `/` |
 | `text`  | `text` | Großer Text, `\n` für Zeilenumbruch |
+| `qr`    | `url`, `title`, `caption` | QR-Code zu `url` mit Überschrift und Untertitel, z. B. für Instagram |
 | `program` | `days` (optional, Standard 28) | Programmübersicht der nächsten Tage aus Teamup, max. 14 Termine |
 | `highlights` | `days` (optional, Standard 28) | Eine Seite pro Teamup-Event mit angehängtem Bild: Details links, Flyer rechts |
 

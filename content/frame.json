@@ -3,6 +3,13 @@
   "items": [
     { "type": "program", "duration": 30 },
     { "type": "highlights", "duration": 15 },
+    {
+      "type": "qr",
+      "url": "https://www.instagram.com/quarterpipe.hh",
+      "title": "Follow us on Instagram",
+      "caption": "@quarterpipe.hh",
+      "duration": 15
+    },
     { "type": "video", "src": "/images/Video.mp4" },
     { "type": "page", "src": "/", "duration": 30 },
     { "type": "text", "text": "Willkommen in der\nQuarterpipe", "duration": 10 }

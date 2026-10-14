@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import type { FrameSlide } from './slides';
-import { HighlightSlide, ProgramSlide } from './EventSlides';
+import { HighlightSlide, ProgramSlide, QrSlide } from './EventSlides';
 
 const VERSION_POLL_MS = 60_000;
 // Nach einem kompletten Durchlauf neu laden, wenn die Seite älter ist – holt frische Teamup-Daten.
@@ -113,6 +113,7 @@ export default function FrameSlideshow({
             <iframe src={item.src} title="" style={styles.iframe} onLoad={hideScrollbar} />
           )}
           {item.type === 'text' && <p style={styles.text}>{item.text}</p>}
+          {item.type === 'qr' && <QrSlide qr={item.qr} title={item.title} caption={item.caption} />}
           {item.type === 'program' && <ProgramSlide {...item} />}
           {item.type === 'highlight' && <HighlightSlide event={item.event} today={item.today} />}
         </div>

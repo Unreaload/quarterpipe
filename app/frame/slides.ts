@@ -1,4 +1,7 @@
+import QRCode from 'qrcode';
 import { fetchEvents, type TeamUpEvent } from '@/app/lib/teamup';
+
+type QrItem = { type: 'qr'; url: string; title?: string; caption?: string; duration?: number };
 
 // Einträge in content/frame.json
 export type FrameItem =
@@ -6,6 +9,7 @@ export type FrameItem =
   | { type: 'video'; src: string; duration?: number } // ohne duration: bis Videoende
   | { type: 'page'; src: string; duration?: number } // eigene Route als iframe
   | { type: 'text'; text: string; duration?: number }
+  | QrItem // QR-Code zu url, mit Überschrift und Untertitel
   | { type: 'program'; duration?: number; days?: number } // Programmübersicht aus Teamup
   | { type: 'highlights'; duration?: number; days?: number }; // je Event mit Flyer eine Seite
 
@@ -22,7 +26,8 @@ export interface FrameEvent {
 
 // Fertig aufgelöste Slides, die an den Client gehen
 export type FrameSlide =
-  | Exclude<FrameItem, { type: 'program' } | { type: 'highlights' }>
+  | Exclude<FrameItem, { type: 'program' } | { type: 'highlights' } | QrItem>
+  | (QrItem & { qr: string }) // qr: SVG als data-URI
   | { type: 'program'; duration?: number; from: string; to: string; today: string; events: FrameEvent[] }
   | { type: 'highlight'; duration?: number; today: string; event: FrameEvent };
 
@@ -102,7 +107,12 @@ export async function resolveSlides(items: FrameItem[]): Promise<FrameSlide[]> {
     return { to, events: events.filter((e) => e.date >= today && e.date <= to) };
   };
 
-  return items.flatMap((item): FrameSlide[] => {
+  const slides = await Promise.all(items.map(async (item): Promise<FrameSlide[]> => {
+    if (item.type === 'qr') {
+      // Schwarz auf Weiß mit Ruhezone, damit Handykameras zuverlässig scannen
+      const svg = await QRCode.toString(item.url, { type: 'svg', margin: 2, errorCorrectionLevel: 'M' });
+      return [{ ...item, qr: `data:image/svg+xml;utf8,${encodeURIComponent(svg)}` }];
+    }
     if (item.type === 'program') {
       const { to, events: list } = upcoming(item.days);
       if (!list.length) return [];
@@ -117,5 +127,6 @@ export async function resolveSlides(items: FrameItem[]): Promise<FrameSlide[]> {
         .map((e) => ({ type: 'highlight', duration: item.duration, today, event: toFrameEvent(e) }));
     }
     return [item];
-  });
+  }));
+  return slides.flat();
 }

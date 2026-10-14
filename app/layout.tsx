@@ -25,7 +25,7 @@ export const metadata = {
   openGraph: {
     title: "Quarterpipe Hamburg",
     description: "Skatehalle, Proberaum und Eventlocation in der Hamburger HafenCity – Teil des AMiGO* Wohnprojekts.",
-    url: "https://quarterpipe.de",
+    url: "https://quarterpipe.hamburg",
     siteName: "Quarterpipe Hamburg",
     locale: "de_DE",
     type: "website",

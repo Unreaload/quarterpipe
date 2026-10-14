@@ -20,6 +20,28 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## Digitaler Bilderrahmen (`/frame`)
+
+`/frame` ist eine Vollbild-Slideshow für den Monitor mit Raspberry Pi (Chromium-Kiosk). Inhalte kommen aus dem Repo:
+
+- Medien nach `public/frame/` legen, dann `npm run frame:resize` (verkleinert Bilder auf max. 1920×1080 und dreht sie nach EXIF).
+- Playlist in `content/frame.json` pflegen. `duration` in Sekunden, sonst gilt `defaultDuration`.
+
+| `type`  | Feld   | Verhalten |
+|---------|--------|-----------|
+| `image` | `src`  | Bild, eingepasst auf schwarzem Grund |
+| `video` | `src`  | Stumm. Ohne `duration` bis zum Videoende, mit `duration` in Schleife bis Zeitablauf. MP4/H.264, max. 1080p |
+| `page`  | `src`  | Eigene Route als iframe, z. B. `/` |
+| `text`  | `text` | Großer Text, `\n` für Zeilenumbruch |
+
+Nach `git push` und Vercel-Deploy lädt eine offene `/frame`-Seite innerhalb von ~1 Minute neu (`/api/frame-version` liefert den Commit-SHA). Lokal testen: `FRAME_VERSION=neu npm run dev` simuliert eine neue Version.
+
+Kiosk-Start auf dem Pi:
+
+```bash
+chromium-browser --kiosk --noerrdialogs --disable-infobars --autoplay-policy=no-user-gesture-required https://quarterpipe.de/frame
+```
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:

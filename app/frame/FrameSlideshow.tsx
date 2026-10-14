@@ -1,14 +1,12 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-
-export type FrameItem =
-  | { type: 'image'; src: string; duration?: number }
-  | { type: 'video'; src: string; duration?: number } // ohne duration: bis Videoende
-  | { type: 'page'; src: string; duration?: number } // eigene Route als iframe
-  | { type: 'text'; text: string; duration?: number };
+import type { FrameSlide } from './slides';
+import { HighlightSlide, ProgramSlide } from './EventSlides';
 
 const VERSION_POLL_MS = 60_000;
+// Nach einem kompletten Durchlauf neu laden, wenn die Seite älter ist – holt frische Teamup-Daten.
+const DATA_REFRESH_MS = 30 * 60_000;
 // Sicherheitsnetz, falls ein Video ohne duration hängt und nie "ended" feuert.
 const MAX_VIDEO_MS = 10 * 60_000;
 
@@ -36,7 +34,7 @@ export default function FrameSlideshow({
   defaultDuration,
   version,
 }: {
-  items: FrameItem[];
+  items: FrameSlide[];
   defaultDuration: number;
   version: string;
 }) {
@@ -56,12 +54,24 @@ export default function FrameSlideshow({
     return () => clearTimeout(id);
   }, [step, item, count, defaultDuration]);
 
-  // Nächstes Bild vorladen
+  // Nächstes Bild bzw. nächsten Flyer vorladen
   useEffect(() => {
     if (count < 2) return;
     const upcoming = items[(step + 1) % count];
     if (upcoming.type === 'image') new Image().src = upcoming.src;
+    if (upcoming.type === 'highlight' && upcoming.event.imageUrl) new Image().src = upcoming.event.imageUrl;
   }, [step, items, count]);
+
+  // Durchlauf beendet und Daten alt → neu laden, aber nur wenn der Server erreichbar ist
+  // (ein Reload ohne Netz bliebe auf Chromiums Fehlerseite hängen).
+  useEffect(() => {
+    if (step === 0 || step % count !== 0 || performance.now() < DATA_REFRESH_MS) return;
+    fetch(location.href, { method: 'HEAD', cache: 'no-store' })
+      .then((res) => res.ok && location.reload())
+      .catch(() => {
+        /* offline: weiterlaufen */
+      });
+  }, [step, count]);
 
   // Neuer Deploy → Reload
   useEffect(() => {
@@ -103,6 +113,8 @@ export default function FrameSlideshow({
             <iframe src={item.src} title="" style={styles.iframe} onLoad={hideScrollbar} />
           )}
           {item.type === 'text' && <p style={styles.text}>{item.text}</p>}
+          {item.type === 'program' && <ProgramSlide {...item} />}
+          {item.type === 'highlight' && <HighlightSlide event={item.event} today={item.today} />}
         </div>
       )}
       <style>{`

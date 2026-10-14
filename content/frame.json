@@ -1,6 +1,8 @@
 {
   "defaultDuration": 15,
   "items": [
+    { "type": "program", "duration": 30 },
+    { "type": "highlights", "duration": 15 },
     { "type": "image", "src": "/frame/beispiel-1.jpg", "duration": 20 },
     { "type": "image", "src": "/images/Proberaum_weit.jpg" },
     { "type": "video", "src": "/images/Video.mp4" },

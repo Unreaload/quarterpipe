@@ -33,13 +33,17 @@ This project uses [`next/font`](https://nextjs.org/docs/app/building-your-applic
 | `video` | `src`  | Stumm. Ohne `duration` bis zum Videoende, mit `duration` in Schleife bis Zeitablauf. MP4/H.264, max. 1080p |
 | `page`  | `src`  | Eigene Route als iframe, z. B. `/` |
 | `text`  | `text` | Großer Text, `\n` für Zeilenumbruch |
+| `program` | `days` (optional, Standard 28) | Programmübersicht der nächsten Tage aus Teamup, max. 14 Termine |
+| `highlights` | `days` (optional, Standard 28) | Eine Seite pro Teamup-Event mit angehängtem Bild: Details links, Flyer rechts |
+
+Teamup-Daten werden alle 15 Minuten neu geholt. Die offene Kiosk-Seite lädt nach einem kompletten Durchlauf neu, wenn sie älter als 30 Minuten ist (nur wenn der Server erreichbar ist). Ist Teamup nicht erreichbar, fallen diese Slides einfach weg.
 
 Nach `git push` und Vercel-Deploy lädt eine offene `/frame`-Seite innerhalb von ~1 Minute neu (`/api/frame-version` liefert den Commit-SHA). Lokal testen: `FRAME_VERSION=neu npm run dev` simuliert eine neue Version.
 
 Kiosk-Start auf dem Pi:
 
 ```bash
-chromium-browser --kiosk --noerrdialogs --disable-infobars --autoplay-policy=no-user-gesture-required https://quarterpipe.de/frame
+chromium-browser --kiosk --noerrdialogs --disable-infobars --autoplay-policy=no-user-gesture-required https://quarterpipe.hamburg/frame
 ```
 
 ## Learn More

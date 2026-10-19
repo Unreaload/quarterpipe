@@ -4,6 +4,7 @@ export interface TeamUpEvent {
   time: string;       // "HH:MM" or "" for all-day
   endTime: string;    // "HH:MM" or ""
   einlass: string;    // "HH:MM" or ""
+  anmeldung: number;  // Plätze für die Anmeldung über die Website, 0 = keine Anmeldung
   allDay: boolean;
   title: string;
   sub: string;
@@ -61,7 +62,7 @@ function htmlToText(html: string): string {
     .trim();
 }
 
-const STRUCTURE_KEYS = /^(Titel|Start|Ende|Einlass|Location|Notes|Anhang)$/i;
+const STRUCTURE_KEYS = /^(Titel|Start|Ende|Einlass|Anmeldung|Location|Notes|Anhang)$/i;
 
 // A label line followed by a line of nothing but links collapses into one
 // clickable label, so
@@ -110,6 +111,7 @@ interface ParsedNotes {
   titel?: string;
   days: DayEntry[];
   einlass?: string;
+  anmeldung?: number;
   location?: string;
   notes?: string;
 }
@@ -138,6 +140,8 @@ function parseStructuredNotes(notesText: string): ParsedNotes | null {
     const val = currentValue.trim();
     if (currentKey === 'titel') result.titel = val;
     else if (currentKey === 'einlass') result.einlass = val.replace(/\s*uhr\s*$/i, '');
+    // "Anmeldung: 80" oder "Anmeldung: 80 Plätze" schaltet die Anmeldung mit 80 Plätzen frei
+    else if (currentKey === 'anmeldung') result.anmeldung = parseInt(val.match(/\d+/)?.[0] ?? '0', 10);
     else if (currentKey === 'location') result.location = val;
     else if (currentKey === 'notes') result.notes = val;
     else if (currentKey === 'start') {
@@ -162,7 +166,7 @@ function parseStructuredNotes(notesText: string): ParsedNotes | null {
     if (line.startsWith('*')) break;
     if (line.startsWith('--')) continue;
 
-    const match = line.match(/^(Titel|Start|Ende|Einlass|Location|Notes|Anhang):\s*(.*)/i);
+    const match = line.match(/^(Titel|Start|Ende|Einlass|Anmeldung|Location|Notes|Anhang):\s*(.*)/i);
     if (match) {
       flush();
       currentKey = match[1].toLowerCase();
@@ -259,6 +263,7 @@ export async function fetchEvents(): Promise<TeamUpEvent[]> {
 
     const title = parsed?.titel || e.title;
     const einlass = parsed?.einlass || '';
+    const anmeldung = parsed?.anmeldung || 0;
     const sub = parsed?.location || e.location || '';
     const description = parsed?.notes || (parsed ? '' : notesText);
 
@@ -274,6 +279,7 @@ export async function fetchEvents(): Promise<TeamUpEvent[]> {
           endTime: day.endTime,
           allDay: false,
           einlass,
+          anmeldung,
           title,
           sub,
           description,
@@ -297,6 +303,7 @@ export async function fetchEvents(): Promise<TeamUpEvent[]> {
         endTime,
         allDay,
         einlass,
+        anmeldung,
         title,
         sub,
         description,
@@ -312,6 +319,7 @@ export async function fetchEvents(): Promise<TeamUpEvent[]> {
           endTime,
           allDay,
           einlass,
+          anmeldung,
           title,
           sub,
           description,

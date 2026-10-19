@@ -34,7 +34,7 @@ export default function Datenschutz() {
         <section className="flex flex-col gap-4 border-b-4 border-black pb-12">
           <h2 className="font-mono text-[10px] tracking-[0.4em] uppercase opacity-40">2. Erhebung und Verarbeitung personenbezogener Daten</h2>
           <p className="font-mono text-sm opacity-60 leading-relaxed">
-            Wir erheben personenbezogene Daten nur, wenn du uns diese freiwillig im Rahmen einer Kontaktanfrage (Raumanfrage oder Proberaum-Anfrage) mitteilst. Dies umfasst Name, E-Mail-Adresse sowie die von dir angegebenen Angaben zur Anfrage.
+            Wir erheben personenbezogene Daten nur, wenn du uns diese freiwillig im Rahmen einer Kontaktanfrage (Raumanfrage oder Proberaum-Anfrage) oder einer Anmeldung zu einer Veranstaltung mitteilst. Dies umfasst Name, E-Mail-Adresse sowie die von dir angegebenen Angaben zur Anfrage bzw. die Anzahl der angemeldeten Personen.
           </p>
         </section>
 
@@ -64,7 +64,20 @@ export default function Datenschutz() {
         </section>
 
         <section className="flex flex-col gap-4 border-b-4 border-black pb-12">
-          <h2 className="font-mono text-[10px] tracking-[0.4em] uppercase opacity-40">6. Einbindung von Google Maps</h2>
+          <h2 className="font-mono text-[10px] tracking-[0.4em] uppercase opacity-40">6. Anmeldung zu Veranstaltungen</h2>
+          <p className="font-mono text-sm opacity-60 leading-relaxed">
+            Für Veranstaltungen mit Anmeldung speichern wir Name, E-Mail-Adresse, die Anzahl der Plätze sowie den Zeitpunkt der Bestätigung und des Einlasses. Wir nutzen diese Daten ausschließlich, um die Plätze zu vergeben, Tickets auszustellen, den Einlass zu prüfen und dich bei kurzfristigen Änderungen zu informieren. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO (Durchführung der Anmeldung).
+          </p>
+          <p className="font-mono text-sm opacity-60 leading-relaxed">
+            Die Daten liegen in einer Datenbank des Anbieters Neon (Serverstandort Frankfurt am Main). Die Bestätigungs-E-Mail versenden wir über Brevo (Sendinblue GmbH, Berlin). Beide verarbeiten die Daten nur in unserem Auftrag.
+          </p>
+          <p className="font-mono text-sm opacity-60 leading-relaxed">
+            Alle Daten zu einer Veranstaltung werden 30 Tage nach dem Termin automatisch gelöscht, unbestätigte oder abgesagte Anmeldungen nach spätestens 7 Tagen.
+          </p>
+        </section>
+
+        <section className="flex flex-col gap-4 border-b-4 border-black pb-12">
+          <h2 className="font-mono text-[10px] tracking-[0.4em] uppercase opacity-40">7. Einbindung von Google Maps</h2>
           <p className="font-mono text-sm opacity-60 leading-relaxed">
             Diese Website verwendet Google Maps zur Darstellung einer Karte. Anbieter ist Google Ireland Limited, Gordon House, Barrow Street, Dublin 4, Irland. Bei der Nutzung von Google Maps können Daten an Google-Server in den USA übertragen werden. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an einer nutzerfreundlichen Darstellung des Standorts). Weitere Informationen findest du in der{' '}
             <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" className="underline hover:opacity-60">
@@ -74,7 +87,7 @@ export default function Datenschutz() {
         </section>
 
         <section className="flex flex-col gap-4 border-b-4 border-black pb-12">
-          <h2 className="font-mono text-[10px] tracking-[0.4em] uppercase opacity-40">7. Deine Rechte</h2>
+          <h2 className="font-mono text-[10px] tracking-[0.4em] uppercase opacity-40">8. Deine Rechte</h2>
           <p className="font-mono text-sm opacity-60 leading-relaxed">
             Du hast das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung, Datenübertragbarkeit und Widerspruch. Wende dich dazu an{' '}
             <a href="mailto:datenschutz@wirsindamigo.de" className="underline hover:opacity-100">
@@ -85,9 +98,9 @@ export default function Datenschutz() {
         </section>
 
         <section className="flex flex-col gap-4">
-          <h2 className="font-mono text-[10px] tracking-[0.4em] uppercase opacity-40">8. Keine Cookies / Tracking</h2>
+          <h2 className="font-mono text-[10px] tracking-[0.4em] uppercase opacity-40">9. Keine Cookies / Tracking</h2>
           <p className="font-mono text-sm opacity-60 leading-relaxed">
-            Diese Website verwendet keine Tracking-Cookies und keine Analyse-Dienste (wie Google Analytics). Es werden keine Nutzerprofile erstellt.
+            Diese Website verwendet keine Tracking-Cookies und keine Analyse-Dienste (wie Google Analytics). Es werden keine Nutzerprofile erstellt. Lediglich im internen Einlass-Bereich für unser Team wird ein technisch notwendiges Cookie gesetzt, das die Anmeldung des Geräts für einen Abend speichert.
           </p>
         </section>
 

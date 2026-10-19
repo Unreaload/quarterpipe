@@ -47,6 +47,25 @@ Kiosk-Start auf dem Pi:
 chromium-browser --kiosk --noerrdialogs --disable-infobars --autoplay-policy=no-user-gesture-required https://quarterpipe.hamburg/frame
 ```
 
+## Anmeldung & Einlass (`/anmeldung`, `/einlass`)
+
+Kostenlose Anmeldung mit Platzkontingent, QR-Ticket und Einlass-Scanner im Handy-Browser.
+
+- **Freischalten:** In Teamup in die Notizen des Events (strukturiertes Format mit `Titel:`) eine Zeile `Anmeldung: 80` schreiben – die Zahl ist das Kontingent. Auf der Startseite erscheint dann „Anmelden →“.
+- **Ablauf:** Formular → eine Mail mit Link (Brevo) → auf `/ticket/<id>` bestätigen → dort stehen die QR-Codes. Plätze werden erst bei der Bestätigung belegt, unbestätigte Anmeldungen verfallen nach 24 h. Über denselben Link kann man absagen.
+- **Einlass:** `/einlass` auf dem Handy öffnen, die 6-stellige PIN des Events eingeben (steht auf `/mitglieder`). Scanner, Code-Eingabe (`QP-7K3M`) und Gästeliste. Mehrere Geräte gleichzeitig gehen.
+- **Löschen:** Vercel Cron löscht täglich alle Daten zu Events, die älter als 30 Tage sind (`/api/cron/tickets-cleanup`).
+
+Env-Variablen:
+
+| Variable | Zweck |
+|---|---|
+| `DATABASE_URL` | Neon Postgres (über den Vercel Marketplace, Region Frankfurt). Lokal leer lassen → eingebettetes Postgres in `.data/` |
+| `TICKETS_SECRET` | Zufallswert, daraus werden Einlass-PINs und Einlass-Cookies abgeleitet. Ändern macht alle PINs neu |
+| `CRON_SECRET` | Zufallswert, schützt den Aufräum-Cron |
+
+Lokal testen ohne echten Mailversand: `MAIL_LOG=1 TICKETS_SECRET=test npm run dev` – Mails landen in der Konsole.
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:

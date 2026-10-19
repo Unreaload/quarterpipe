@@ -65,6 +65,12 @@ export async function sendTransactionalEmail(opts: {
   html: string;
   text: string;
 }): Promise<void> {
+  // Lokal testen ohne echten Versand: MAIL_LOG=1 npm run dev
+  if (process.env.MAIL_LOG === '1' && process.env.NODE_ENV !== 'production') {
+    console.log(`\n--- Mail an ${opts.to}: ${opts.subject}\n${opts.text}\n---\n`);
+    return;
+  }
+
   const apiKey = process.env.BREVO_API_KEY;
   if (!apiKey) throw new Error('BREVO_API_KEY missing');
 

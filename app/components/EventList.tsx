@@ -75,6 +75,14 @@ export function EventList({ events, today }: { events: TeamUpEvent[]; today: str
               {event.sub && (
                 <span className="font-mono text-sm md:text-base tracking-[0.2em] uppercase opacity-50">{event.sub}</span>
               )}
+              {event.anmeldung > 0 && !isPast && (
+                <a
+                  href={`/anmeldung/${event.id}`}
+                  className="mt-2 border-4 border-black px-5 py-2 font-black italic text-lg md:text-xl hover:bg-black hover:text-white transition-all"
+                >
+                  Anmelden →
+                </a>
+              )}
               {isExpanded && event.description && (
                 event.description.split('\n').map((line, i) => (
                   <span key={i} className="font-mono text-sm md:text-base tracking-[0.2em] opacity-80">{linkify(line)}</span>

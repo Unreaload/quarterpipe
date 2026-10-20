@@ -10,6 +10,7 @@ export interface TeamUpEvent {
   sub: string;
   description: string;
   imageUrl: string;
+  closed: boolean;    // geschlossene Veranstaltung, nur mit includeClosed geladen
 }
 
 // TeamUp returns start_dt/end_dt as ISO strings with the calendar's own
@@ -198,7 +199,10 @@ function parseStructuredNotes(notesText: string): ParsedNotes | null {
   return result.titel ? result : null;
 }
 
-export async function fetchEvents(): Promise<TeamUpEvent[]> {
+// Geschlossene Veranstaltungen (veranstalter_in "…geschlossen") stehen nie im
+// öffentlichen Programm. includeClosed lädt sie trotzdem – für die Anmeldung
+// per Direktlink, z. B. für interne Feiern oder einen Testlauf.
+export async function fetchEvents({ includeClosed = false } = {}): Promise<TeamUpEvent[]> {
   const calendarKey = process.env.TEAMUP_CALENDAR_KEY;
   if (!calendarKey) throw new Error('TEAMUP_CALENDAR_KEY is not set');
 
@@ -240,11 +244,13 @@ export async function fetchEvents(): Promise<TeamUpEvent[]> {
 
   const rawEvents: RawEvent[] = data.events ?? [];
 
+  const isClosed = (e: RawEvent) =>
+    (e.custom?.veranstalter_in ?? []).some(v => v.includes('geschlossen'));
+
   const visible = rawEvents.filter(e => {
     const text = `${e.title} ${e.location ?? ''}`.toLowerCase();
     if (text.includes('vorlage veranstaltung') || text.includes('anfrage')) return false;
-    const veranstalter = e.custom?.veranstalter_in ?? [];
-    if (veranstalter.some(v => v.includes('geschlossen'))) return false;
+    if (isClosed(e) && !includeClosed) return false;
     return true;
   });
 
@@ -252,6 +258,7 @@ export async function fetchEvents(): Promise<TeamUpEvent[]> {
 
   for (const e of visible) {
     const allDay = !!e.all_day;
+    const closed = isClosed(e);
     const notes = e.notes ?? '';
     const notesText = collapseLinkLabels(htmlToText(notes));
 
@@ -284,6 +291,7 @@ export async function fetchEvents(): Promise<TeamUpEvent[]> {
           sub,
           description,
           imageUrl,
+          closed,
         });
       }
       continue;
@@ -308,6 +316,7 @@ export async function fetchEvents(): Promise<TeamUpEvent[]> {
         sub,
         description,
         imageUrl,
+        closed,
       });
     } else {
       let d = startDateStr;
@@ -324,6 +333,7 @@ export async function fetchEvents(): Promise<TeamUpEvent[]> {
           sub,
           description,
           imageUrl,
+          closed,
         });
         d = addDays(d, 1);
       }

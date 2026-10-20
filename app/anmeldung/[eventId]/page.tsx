@@ -12,7 +12,11 @@ type Params = Promise<{ eventId: string }>;
 export async function generateMetadata({ params }: { params: Params }) {
   const { eventId } = await params;
   const event = await getRegistrationEvent(eventId).catch(() => null);
-  return { title: event ? `Anmeldung: ${event.title} – Quarterpipe` : 'Anmeldung – Quarterpipe' };
+  return {
+    title: event ? `Anmeldung: ${event.title} – Quarterpipe` : 'Anmeldung – Quarterpipe',
+    // Geschlossene Events sollen auch über Suchmaschinen nicht auffindbar sein.
+    ...(event?.closed && { robots: { index: false, follow: false } }),
+  };
 }
 
 export default async function AnmeldungPage({ params }: { params: Params }) {

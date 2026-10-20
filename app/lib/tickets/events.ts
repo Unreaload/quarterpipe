@@ -35,8 +35,11 @@ export function registrationOpen(e: { date: string; time: string }): boolean {
   return `${e.date} ${e.time || '23:59'}` > berlinNow();
 }
 
-/** Teamup-Event mit freigeschalteter Anmeldung ("Anmeldung: 80" in den Notizen), sonst null. */
+/**
+ * Teamup-Event mit freigeschalteter Anmeldung ("Anmeldung: 80" in den Notizen),
+ * sonst null. Geschlossene Events zählen mit – sie sind nur über den Link erreichbar.
+ */
 export async function getRegistrationEvent(id: string): Promise<TeamUpEvent | null> {
-  const events = await fetchEvents();
+  const events = await fetchEvents({ includeClosed: true });
   return events.find(e => e.id === id && e.anmeldung > 0) ?? null;
 }

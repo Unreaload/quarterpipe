@@ -13,7 +13,7 @@ const links: { label: string; url: string; description?: string }[] = [
 async function loadAnmeldungen() {
   const today = berlinToday();
   try {
-    const [events, stats] = await Promise.all([fetchEvents(), eventStats(today)]);
+    const [events, stats] = await Promise.all([fetchEvents({ includeClosed: true }), eventStats(today)]);
     return events
       .filter((e: TeamUpEvent) => e.anmeldung > 0 && e.date >= today)
       .map(e => ({
@@ -55,6 +55,7 @@ export default async function MitgliederPage() {
             <p className="font-mono text-sm opacity-60 leading-relaxed">
               Freischalten: In Teamup in die Notizen des Events eine Zeile{' '}
               <code className="bg-black text-white px-1">Anmeldung: 80</code> schreiben (Zahl = Plätze).
+              Geschlossene Events erscheinen nicht im Programm, die Anmeldung geht dann nur über den Link hier.
               Am Abend <a href="/einlass" className="underline">/einlass</a> auf dem Handy öffnen und die PIN eingeben.
             </p>
           </div>
@@ -69,6 +70,7 @@ export default async function MitgliederPage() {
             <div key={event.id} className="flex flex-col gap-2 border-t-2 border-black/20 pt-6">
               <span className="font-mono text-[10px] tracking-[0.3em] uppercase opacity-50">
                 {formatWhen(event.date, event.time)}
+                {event.closed && ' // geschlossen – nur per Link'}
               </span>
               <a href={`/anmeldung/${event.id}`} className="text-2xl md:text-3xl font-black italic tracking-tighter leading-none hover:opacity-60">
                 {event.title}

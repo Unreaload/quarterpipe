@@ -75,10 +75,10 @@ export default function FrameSlideshow({
       });
   }, [step, count]);
 
-  // ?links: Monitor andersherum gedreht
+  // ?rechts: Monitor andersherum gedreht
   useEffect(() => {
-    if (portrait && new URLSearchParams(location.search).has('links')) {
-      document.documentElement.style.setProperty('--frame-rot', '-90deg');
+    if (portrait && new URLSearchParams(location.search).has('rechts')) {
+      document.documentElement.style.setProperty('--frame-rot', '90deg');
     }
   }, [portrait]);
 
@@ -141,7 +141,7 @@ export default function FrameSlideshow({
         html, body { cursor: none; overflow: hidden; background: #000; }
         body::before { display: none; }
         .frame-portrait { position: fixed; inset: 0; }
-        /* Querformat-Ausgabe auf gedrehtem Monitor: Stage um 90° drehen, ?links dreht andersherum */
+        /* Querformat-Ausgabe auf gedrehtem Monitor: Stage um 90° gegen den Uhrzeigersinn drehen, ?rechts dreht andersherum */
         @media (orientation: landscape) {
           .frame-portrait {
             inset: auto;
@@ -149,7 +149,7 @@ export default function FrameSlideshow({
             left: 50%;
             width: 100vh;
             height: 100vw;
-            transform: translate(-50%, -50%) rotate(var(--frame-rot, 90deg));
+            transform: translate(-50%, -50%) rotate(var(--frame-rot, -90deg));
           }
         }
       `}</style>

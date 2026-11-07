@@ -33,10 +33,12 @@ export default function FrameSlideshow({
   items,
   defaultDuration,
   version,
+  portrait = false,
 }: {
   items: FrameSlide[];
   defaultDuration: number;
   version: string;
+  portrait?: boolean;
 }) {
   // Laufender Zähler statt Index, damit sich der key auch bei nur einem Eintrag ändert.
   const [step, setStep] = useState(0);
@@ -73,6 +75,13 @@ export default function FrameSlideshow({
       });
   }, [step, count]);
 
+  // ?links: Monitor andersherum gedreht
+  useEffect(() => {
+    if (portrait && new URLSearchParams(location.search).has('links')) {
+      document.documentElement.style.setProperty('--frame-rot', '-90deg');
+    }
+  }, [portrait]);
+
   // Neuer Deploy → Reload
   useEffect(() => {
     const id = setInterval(async () => {
@@ -89,7 +98,10 @@ export default function FrameSlideshow({
   }, [version]);
 
   return (
-    <div className="frame-stage" style={styles.stage}>
+    <div
+      className={portrait ? 'frame-stage frame-portrait' : 'frame-stage'}
+      style={portrait ? styles.stagePortrait : styles.stage}
+    >
       {item && (
         <div key={step} style={styles.slide}>
           {item.type === 'image' && (
@@ -112,23 +124,56 @@ export default function FrameSlideshow({
           {item.type === 'page' && (
             <iframe src={item.src} title="" style={styles.iframe} onLoad={hideScrollbar} />
           )}
-          {item.type === 'text' && <p style={styles.text}>{item.text}</p>}
-          {item.type === 'qr' && <QrSlide qr={item.qr} title={item.title} caption={item.caption} />}
-          {item.type === 'program' && <ProgramSlide {...item} />}
-          {item.type === 'highlight' && <HighlightSlide event={item.event} today={item.today} />}
+          {item.type === 'text' && (
+            <p style={{ ...styles.text, ...(portrait && styles.textPortrait) }}>{item.text}</p>
+          )}
+          {item.type === 'qr' && (
+            <QrSlide qr={item.qr} title={item.title} caption={item.caption} portrait={portrait} />
+          )}
+          {item.type === 'program' && <ProgramSlide {...item} portrait={portrait} />}
+          {item.type === 'highlight' && (
+            <HighlightSlide event={item.event} today={item.today} portrait={portrait} />
+          )}
         </div>
       )}
       <style>{`
         @keyframes frameFade { from { opacity: 0 } to { opacity: 1 } }
         html, body { cursor: none; overflow: hidden; background: #000; }
         body::before { display: none; }
+        .frame-portrait { position: fixed; inset: 0; }
+        /* Querformat-Ausgabe auf gedrehtem Monitor: Stage um 90° drehen, ?links dreht andersherum */
+        @media (orientation: landscape) {
+          .frame-portrait {
+            inset: auto;
+            top: 50%;
+            left: 50%;
+            width: 100vh;
+            height: 100vw;
+            transform: translate(-50%, -50%) rotate(var(--frame-rot, 90deg));
+          }
+        }
       `}</style>
     </div>
   );
 }
 
 const styles: Record<string, React.CSSProperties> = {
-  stage: { position: 'fixed', inset: 0, background: '#000', overflow: 'hidden' },
+  // containerType macht cqw/cqh in den Slides relativ zur Stage; --u ist 1 % der kurzen Seite
+  stage: {
+    position: 'fixed',
+    inset: 0,
+    background: '#000',
+    overflow: 'hidden',
+    containerType: 'size',
+    ['--u' as string]: '1cqh',
+  },
+  // Position und Drehung kommen aus .frame-portrait (Media Query)
+  stagePortrait: {
+    background: '#000',
+    overflow: 'hidden',
+    containerType: 'size',
+    ['--u' as string]: '1cqw',
+  },
   slide: {
     position: 'absolute',
     inset: 0,
@@ -145,11 +190,12 @@ const styles: Record<string, React.CSSProperties> = {
   text: {
     color: '#fff',
     fontFamily: 'var(--font-anton), sans-serif',
-    fontSize: '6vw',
+    fontSize: '6cqw',
     lineHeight: 1.15,
     textAlign: 'center',
     whiteSpace: 'pre-line',
-    padding: '0 8vw',
+    padding: '0 8cqw',
     margin: 0,
   },
+  textPortrait: { fontSize: '11cqw' },
 };

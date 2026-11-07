@@ -19,6 +19,7 @@ export default async function FramePage() {
       items={slides}
       defaultDuration={config.defaultDuration}
       version={getFrameVersion()}
+      portrait
     />
   );
 }

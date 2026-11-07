@@ -2,8 +2,10 @@ import type { FrameEvent } from './slides';
 
 const WEEKDAYS = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
 const MONTHS = ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'];
-// Ab dieser Anzahl zweispaltig; mehr als das Doppelte passt nicht auf den Screen.
+// Quer: ab dieser Anzahl zweispaltig; mehr als das Doppelte passt nicht auf den Screen.
+// Hochkant: immer einspaltig, gleiche Maximalzahl.
 const ROWS_PER_COLUMN = 7;
+const MAX_ROWS = ROWS_PER_COLUMN * 2;
 
 function parts(date: string) {
   const d = new Date(date + 'T12:00:00Z');
@@ -20,15 +22,17 @@ export function ProgramSlide({
   to,
   today,
   events,
+  portrait,
 }: {
   from: string;
   to: string;
   today: string;
   events: FrameEvent[];
+  portrait?: boolean;
 }) {
-  const max = ROWS_PER_COLUMN * 2;
+  const max = MAX_ROWS;
   const shown = events.slice(0, max);
-  const cols = shown.length > ROWS_PER_COLUMN ? 2 : 1;
+  const cols = !portrait && shown.length > ROWS_PER_COLUMN ? 2 : 1;
   const rows = Math.ceil(shown.length / cols);
   const f = parts(from);
   const t = parts(to);
@@ -47,14 +51,14 @@ export function ProgramSlide({
           ...s.programGrid,
           gridTemplateColumns: `repeat(${cols}, 1fr)`,
           gridTemplateRows: `repeat(${rows}, auto)`,
-          maxWidth: cols === 1 ? '60vw' : undefined,
+          maxWidth: cols === 1 && !portrait ? '60cqw' : undefined,
         }}
       >
         {shown.map((e, i) => {
           const p = parts(e.date);
           return (
-            <div key={i} style={s.row}>
-              <div style={s.rowDate}>
+            <div key={i} style={{ ...s.row, ...(portrait && sp.row) }}>
+              <div style={{ ...s.rowDate, ...(portrait && sp.rowDate) }}>
                 <div style={s.rowDay}>{e.date === today ? 'Heute' : `${p.weekday} ${p.day}.`}</div>
                 <div style={s.rowMeta}>
                   {p.month}
@@ -77,13 +81,21 @@ export function ProgramSlide({
   );
 }
 
-export function HighlightSlide({ event: e, today }: { event: FrameEvent; today: string }) {
+export function HighlightSlide({
+  event: e,
+  today,
+  portrait,
+}: {
+  event: FrameEvent;
+  today: string;
+  portrait?: boolean;
+}) {
   const p = parts(e.date);
   const when = e.date === today ? 'Heute' : `${p.weekday} ${p.day}. ${p.month}`;
   const time = timeLabel(e);
 
   return (
-    <div style={s.highlight}>
+    <div style={{ ...s.highlight, ...(portrait && sp.highlight) }}>
       <div style={s.highlightText}>
         <div style={s.kicker}>
           {when}
@@ -107,23 +119,33 @@ export function HighlightSlide({ event: e, today }: { event: FrameEvent; today: 
       <img
         src={e.imageUrl}
         alt=""
-        style={s.flyer}
+        style={{ ...s.flyer, ...(portrait && sp.flyer) }}
         onError={(ev) => (ev.currentTarget.style.display = 'none')}
       />
     </div>
   );
 }
 
-export function QrSlide({ qr, title, caption }: { qr: string; title?: string; caption?: string }) {
+export function QrSlide({
+  qr,
+  title,
+  caption,
+  portrait,
+}: {
+  qr: string;
+  title?: string;
+  caption?: string;
+  portrait?: boolean;
+}) {
   return (
-    <div style={s.qr}>
-      <div style={s.qrText}>
+    <div style={{ ...s.qr, ...(portrait && sp.qr) }}>
+      <div style={{ ...s.qrText, ...(portrait && sp.qrText) }}>
         <div style={s.kicker}>Hamburg // Hafencity</div>
         {title && <div style={s.qrTitle}>{title}</div>}
         {caption && <div style={s.qrCaption}>{caption}</div>}
       </div>
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={qr} alt="" style={s.qrCode} />
+      <img src={qr} alt="" style={{ ...s.qrCode, ...(portrait && sp.qrCode) }} />
     </div>
   );
 }
@@ -131,6 +153,9 @@ export function QrSlide({ qr, title, caption }: { qr: string; title?: string; ca
 const anton = 'var(--font-anton), Impact, sans-serif';
 const barlow = 'var(--font-barlow), "Arial Narrow", sans-serif';
 const dashed = '2px dashed rgba(255,255,255,0.25)';
+// Basiseinheit für Schrift und vertikale Abstände: 1 % der kurzen Seite (quer: Höhe, hochkant: Breite).
+// --u setzt FrameSlideshow auf der Stage, so bleiben die Pixelgrößen in beiden Formaten gleich.
+const u = (n: number) => `calc(var(--u) * ${n})`;
 const clamp = (lines: number): React.CSSProperties => ({
   display: '-webkit-box',
   WebkitLineClamp: lines,
@@ -141,7 +166,7 @@ const clamp = (lines: number): React.CSSProperties => ({
 const s: Record<string, React.CSSProperties> = {
   kicker: {
     fontFamily: barlow,
-    fontSize: '2.2vh',
+    fontSize: u(2.2),
     letterSpacing: '0.35em',
     textTransform: 'uppercase',
     opacity: 0.5,
@@ -153,69 +178,69 @@ const s: Record<string, React.CSSProperties> = {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    padding: '4vh 5vw 3vh',
+    padding: `${u(4)} 5cqw ${u(3)}`,
     color: '#fff',
   },
-  programHead: { textAlign: 'center', marginBottom: '2.5vh' },
+  programHead: { textAlign: 'center', marginBottom: u(2.5) },
   programTitle: {
     fontFamily: anton,
-    fontSize: '7.5vh',
+    fontSize: u(7.5),
     lineHeight: 1,
     textTransform: 'uppercase',
-    margin: '0.5vh 0',
+    margin: `${u(0.5)} 0`,
   },
   programGrid: {
     flex: 1,
     width: '100%',
     display: 'grid',
     gridAutoFlow: 'column',
-    columnGap: '4vw',
+    columnGap: '4cqw',
     alignContent: 'start',
     overflow: 'hidden',
     borderTop: '4px dashed #fff',
   },
   row: {
     display: 'flex',
-    gap: '1.5vw',
-    padding: '1.2vh 0',
+    gap: '1.5cqw',
+    padding: `${u(1.2)} 0`,
     borderBottom: dashed,
   },
-  rowDate: { width: '7.5vw', flexShrink: 0 },
-  rowDay: { fontFamily: anton, fontSize: '3vh', lineHeight: 1.1, textTransform: 'uppercase' },
+  rowDate: { width: '7.5cqw', flexShrink: 0 },
+  rowDay: { fontFamily: anton, fontSize: u(3), lineHeight: 1.1, textTransform: 'uppercase' },
   rowMeta: {
     fontFamily: barlow,
-    fontSize: '1.9vh',
+    fontSize: u(1.9),
     letterSpacing: '0.12em',
     textTransform: 'uppercase',
     opacity: 0.5,
-    marginTop: '0.3vh',
+    marginTop: u(0.3),
   },
   rowBody: { minWidth: 0 },
   rowTitle: {
     fontFamily: anton,
-    fontSize: '3vh',
+    fontSize: u(3),
     lineHeight: 1.1,
     textTransform: 'uppercase',
     opacity: 0.75,
     ...clamp(2),
   },
   rowHighlight: { opacity: 1 },
-  rowSub: { fontFamily: barlow, fontSize: '2.2vh', opacity: 0.5, marginTop: '0.3vh', ...clamp(1) },
+  rowSub: { fontFamily: barlow, fontSize: u(2.2), opacity: 0.5, marginTop: u(0.3), ...clamp(1) },
   footer: {
     fontFamily: barlow,
-    fontSize: '2vh',
+    fontSize: u(2),
     letterSpacing: '0.3em',
     textTransform: 'uppercase',
     opacity: 0.4,
-    marginTop: '2vh',
+    marginTop: u(2),
   },
 
   highlight: {
     position: 'absolute',
     inset: 0,
     display: 'flex',
-    gap: '4vw',
-    padding: '6vh 5vw',
+    gap: '4cqw',
+    padding: `${u(6)} 5cqw`,
     color: '#fff',
   },
   highlightText: {
@@ -227,41 +252,41 @@ const s: Record<string, React.CSSProperties> = {
   },
   highlightTitle: {
     fontFamily: anton,
-    fontSize: '7.5vh',
+    fontSize: u(7.5),
     lineHeight: 1.02,
     textTransform: 'uppercase',
-    margin: '1.5vh 0 0',
+    margin: `${u(1.5)} 0 0`,
     ...clamp(4),
   },
   highlightSub: {
     fontFamily: barlow,
-    fontSize: '2.6vh',
+    fontSize: u(2.6),
     letterSpacing: '0.15em',
     textTransform: 'uppercase',
     opacity: 0.5,
-    marginTop: '1.5vh',
+    marginTop: u(1.5),
   },
   list: {
     listStyle: 'none',
-    margin: '3.5vh 0 0',
-    padding: '2.5vh 0 0',
+    margin: `${u(3.5)} 0 0`,
+    padding: `${u(2.5)} 0 0`,
     borderTop: dashed,
   },
   listItem: {
     fontFamily: barlow,
-    fontSize: '3vh',
+    fontSize: u(3),
     lineHeight: 1.35,
     opacity: 0.85,
-    padding: '0.6vh 0',
+    padding: `${u(0.6)} 0`,
     ...clamp(2),
   },
   footerLeft: {
     fontFamily: barlow,
-    fontSize: '2vh',
+    fontSize: u(2),
     letterSpacing: '0.3em',
     textTransform: 'uppercase',
     opacity: 0.4,
-    marginTop: '4vh',
+    marginTop: u(4),
   },
   qr: {
     position: 'absolute',
@@ -269,21 +294,21 @@ const s: Record<string, React.CSSProperties> = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: '6vw',
-    padding: '8vh 6vw',
+    gap: '6cqw',
+    padding: `${u(8)} 6cqw`,
     color: '#fff',
   },
-  qrText: { maxWidth: '45vw' },
+  qrText: { maxWidth: '45cqw' },
   qrTitle: {
     fontFamily: anton,
-    fontSize: '10vh',
+    fontSize: u(10),
     lineHeight: 1,
     textTransform: 'uppercase',
-    margin: '2vh 0 0',
+    margin: `${u(2)} 0 0`,
   },
-  qrCaption: { fontFamily: barlow, fontSize: '4.5vh', opacity: 0.7, marginTop: '3vh' },
+  qrCaption: { fontFamily: barlow, fontSize: u(4.5), opacity: 0.7, marginTop: u(3) },
   qrCode: {
-    height: '62vh',
+    height: u(62),
     aspectRatio: '1',
     background: '#fff',
     filter: 'none',
@@ -293,10 +318,21 @@ const s: Record<string, React.CSSProperties> = {
   // filter/mixBlendMode heben den Xerox-Look aus globals.css auf
   flyer: {
     height: '100%',
-    maxWidth: '45vw',
+    maxWidth: '45cqw',
     objectFit: 'contain',
     flexShrink: 0,
     filter: 'none',
     mixBlendMode: 'normal',
   },
+};
+
+// Hochkant-Abweichungen: Flyer über dem Text, QR-Code unter dem Text, Programm einspaltig
+const sp: Record<string, React.CSSProperties> = {
+  row: { gap: '3cqw' },
+  rowDate: { width: '15cqw' },
+  highlight: { flexDirection: 'column-reverse', gap: u(4), padding: `${u(6)} 7cqw` },
+  flyer: { height: 'auto', width: '100%', maxHeight: '55cqh', maxWidth: 'none' },
+  qr: { flexDirection: 'column', gap: u(6), textAlign: 'center' },
+  qrText: { maxWidth: 'none' },
+  qrCode: { height: 'auto', width: '70cqw' },
 };

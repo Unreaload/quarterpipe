@@ -45,6 +45,28 @@ function addDays(dateStr: string, n: number): string {
 }
 
 const LINK = /\[([^\]]*)\]\([^)]+\)/g;
+// Links, die als eigener QR-Slide hinter dem Highlight erscheinen (Bandlinks u. Ä. nicht)
+const SIGNUP = /anmeld|ticket|registr|vorverkauf|sign.?up/i;
+
+// Schwarz auf Weiß mit Ruhezone, damit Handykameras zuverlässig scannen
+async function qrDataUri(url: string): Promise<string> {
+  const svg = await QRCode.toString(url, { type: 'svg', margin: 2, errorCorrectionLevel: 'M' });
+  return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
+}
+
+// Erster Anmelde-/Ticketlink aus den Teamup-Notes, als Markdown-Link oder nackte URL mit Text davor
+function signupLink(description: string): { label: string; url: string } | undefined {
+  for (const line of description.split('\n')) {
+    const md = [...line.matchAll(/\[([^\]]*)\]\((https?:\/\/[^)\s]+)\)/g)].find((m) => SIGNUP.test(m[1]));
+    const bare = !md ? line.match(/https?:\/\/\S+/)?.[0] : undefined;
+    const label = md ? md[1] : bare ? line.replace(bare, '') : '';
+    const url = md ? md[2] : bare;
+    if (url && SIGNUP.test(label)) {
+      // "… hier:" am Ende weg, das passt nicht zur Überschrift
+      return { label: label.replace(/\s*\b(hier|here)\b\s*[:.!]?\s*$/i, '').replace(/[\s:]+$/, '').trim(), url };
+    }
+  }
+}
 
 // Teamup-Notes für den Bildschirm: Links auf ihr Label reduzieren, nackte URLs weg,
 // aufeinanderfolgende reine Link-Zeilen (Bandnamen) zu "A · B · C" zusammenfassen.
@@ -109,9 +131,7 @@ export async function resolveSlides(items: FrameItem[]): Promise<FrameSlide[]> {
 
   const slides = await Promise.all(items.map(async (item): Promise<FrameSlide[]> => {
     if (item.type === 'qr') {
-      // Schwarz auf Weiß mit Ruhezone, damit Handykameras zuverlässig scannen
-      const svg = await QRCode.toString(item.url, { type: 'svg', margin: 2, errorCorrectionLevel: 'M' });
-      return [{ ...item, qr: `data:image/svg+xml;utf8,${encodeURIComponent(svg)}` }];
+      return [{ ...item, qr: await qrDataUri(item.url) }];
     }
     if (item.type === 'program') {
       const { to, events: list } = upcoming(item.days);
@@ -120,11 +140,25 @@ export async function resolveSlides(items: FrameItem[]): Promise<FrameSlide[]> {
     }
     if (item.type === 'highlights') {
       const seen = new Set<string>();
-      return upcoming(item.days)
+      const highlights = upcoming(item.days)
         .events.filter((e) => e.imageUrl)
         // mehrtägige Events nur einmal zeigen
-        .filter((e) => !seen.has(e.title) && !!seen.add(e.title))
-        .map((e) => ({ type: 'highlight', duration: item.duration, today, event: toFrameEvent(e) }));
+        .filter((e) => !seen.has(e.title) && !!seen.add(e.title));
+      const perEvent = await Promise.all(highlights.map(async (e): Promise<FrameSlide[]> => {
+        const highlight: FrameSlide = { type: 'highlight', duration: item.duration, today, event: toFrameEvent(e) };
+        const link = signupLink(e.description);
+        if (!link) return [highlight];
+        const [, m, d] = e.date.split('-').map(Number);
+        return [highlight, {
+          type: 'qr',
+          url: link.url,
+          qr: await qrDataUri(link.url),
+          title: link.label || 'Anmeldung',
+          caption: `${e.title} · ${d}.${m}.`,
+          duration: item.duration,
+        }];
+      }));
+      return perEvent.flat();
     }
     return [item];
   }));

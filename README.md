@@ -35,9 +35,9 @@ This project uses [`next/font`](https://nextjs.org/docs/app/building-your-applic
 | `text`  | `text` | Großer Text, `\n` für Zeilenumbruch |
 | `qr`    | `url`, `title`, `caption` | QR-Code zu `url` mit Überschrift und Untertitel, z. B. für Instagram |
 | `program` | `days` (optional, Standard 28) | Programmübersicht der nächsten Tage aus Teamup, max. 14 Termine |
-| `highlights` | `days` (optional, Standard 28) | Eine Seite pro Teamup-Event mit angehängtem Bild: Details links, Flyer rechts. Steht in den Notizen ein Anmelde- oder Ticketlink (Linktext mit „Anmeldung“, „Ticket“, „Vorverkauf“ …), folgt ein großer QR-Code dazu |
+| `highlights` | `days` (optional, Standard 28) | Eine Seite pro Teamup-Event mit angehängtem Bild: Flyer oben, darunter Titel, Eckdaten und Eventtext (kurze Stichpunkte mehrspaltig). Passt der Text nicht, wird er gekürzt und ein QR-Code „Mehr Infos unter: quarterpipe.hamburg“ führt zum aufgeklappten Event auf der Startseite (`/#event-<id>`). Steht in den Notizen ein Anmelde- oder Ticketlink (Linktext mit „Anmeldung“, „Ticket“, „Vorverkauf“ …), folgt ein großer QR-Code dazu |
 
-`/frame` läuft im Hochkantformat 9:16 (bei Highlights steht der Flyer oben, die Details darunter). Ist das Browserfenster quer (Monitor gedreht, Pi gibt Querformat aus), wird die Seite um 90° gedreht, `?links` dreht andersherum.
+`/frame` läuft im Hochkantformat 9:16. Flyer werden immer vollständig gezeigt, Texte bei Bedarf verkleinert. Ist das Browserfenster quer (Monitor gedreht, Pi gibt Querformat aus), wird die Seite um 90° gedreht, `?links` dreht andersherum.
 
 Querformat-Variante (Reserve): `/frame/querformat` zeigt dieselbe Playlist im 16:9-Layout.
 

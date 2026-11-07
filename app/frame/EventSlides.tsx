@@ -1,3 +1,4 @@
+import { useLayoutEffect, useRef } from 'react';
 import type { FrameEvent } from './slides';
 
 const WEEKDAYS = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
@@ -10,6 +11,76 @@ const MAX_ROWS = ROWS_PER_COLUMN * 2;
 function parts(date: string) {
   const d = new Date(date + 'T12:00:00Z');
   return { weekday: WEEKDAYS[d.getUTCDay()], day: d.getUTCDate(), month: MONTHS[d.getUTCMonth()] };
+}
+
+// Verkleinert die Schrift (--fit) schrittweise, bis der Inhalt in die Box passt – scrollen kann am Frame niemand.
+function useFit<T extends HTMLElement>() {
+  const ref = useRef<T>(null);
+  useLayoutEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const fit = () => {
+      let f = 1;
+      el.style.setProperty('--fit', '1');
+      while (el.scrollHeight > el.clientHeight + 1 && f > 0.5) {
+        f -= 0.05;
+        el.style.setProperty('--fit', String(f));
+      }
+    };
+    fit();
+    // Webfonts ändern die Höhe, falls sie erst nach dem ersten Layout da sind
+    document.fonts?.ready.then(fit);
+  }, []);
+  return ref;
+}
+
+// Hochkant wie quer: erst die Schrift etwas verkleinern, dann den Eventtext von hinten kürzen
+// und stattdessen einen QR-Code zur Website zeigen. Notfalls weiter verkleinern.
+const SOFT_FIT = 0.8;
+const MIN_FIT = 0.5;
+
+function fitHighlight(box: HTMLElement) {
+  const all = (sel: string) => [...box.querySelectorAll<HTMLElement>(sel)];
+  const lines = all('[data-line]');
+  const [list] = all('[data-list]');
+  const [more] = all('[data-more]');
+  const [footer] = all('[data-footer]');
+  const overflows = () => box.scrollHeight > box.clientHeight + 1;
+  // Zeile per line-clamp mit … abgeschnitten
+  const clipped = () => lines.some((l) => l.style.display !== 'none' && l.scrollHeight > l.clientHeight + 1);
+  let fit = 1;
+  const setFit = (f: number) => box.style.setProperty('--fit', String((fit = f)));
+  const shrink = (min: number) => {
+    while (overflows() && fit > min + 0.001) setFit(fit - 0.05);
+  };
+  const show = (el: HTMLElement | undefined, on: boolean, display = '') => {
+    if (el) el.style.display = on ? display : 'none';
+  };
+
+  setFit(1);
+  lines.forEach((l) => show(l, true));
+  show(list, true);
+  show(more, false);
+  show(footer, true);
+
+  shrink(SOFT_FIT);
+  if (!overflows() && !clipped()) return;
+
+  if (more) {
+    show(more, true, 'flex');
+    show(footer, false);
+  }
+  for (let i = lines.length - 1; i >= 0 && overflows(); i--) show(lines[i], false);
+  show(list, lines.some((l) => l.style.display !== 'none'));
+  shrink(MIN_FIT);
+}
+
+// Kurze Stichpunkte nebeneinander, damit mehr davon Platz haben
+function lineColumns(lines: string[]) {
+  if (lines.length < 3) return 1;
+  const longest = Math.max(...lines.map((l) => l.length));
+  if (longest <= 18 && lines.length >= 6) return 3;
+  return longest <= 30 ? 2 : 1;
 }
 
 function timeLabel(e: FrameEvent) {
@@ -36,6 +107,7 @@ export function ProgramSlide({
   const rows = Math.ceil(shown.length / cols);
   const f = parts(from);
   const t = parts(to);
+  const gridRef = useFit<HTMLDivElement>();
 
   return (
     <div style={s.program}>
@@ -47,6 +119,7 @@ export function ProgramSlide({
         </div>
       </div>
       <div
+        ref={gridRef}
         style={{
           ...s.programGrid,
           gridTemplateColumns: `repeat(${cols}, 1fr)`,
@@ -93,27 +166,48 @@ export function HighlightSlide({
   const p = parts(e.date);
   const when = e.date === today ? 'Heute' : `${p.weekday} ${p.day}. ${p.month}`;
   const time = timeLabel(e);
+  const facts = [e.sub, e.einlass && `Einlass ${e.einlass} Uhr`].filter(Boolean).join(' // ');
+  const cols = lineColumns(e.lines);
+  const textRef = useRef<HTMLDivElement>(null);
 
+  useLayoutEffect(() => {
+    const box = textRef.current;
+    if (!box) return;
+    fitHighlight(box);
+    // Webfonts ändern die Höhe, falls sie erst nach dem ersten Layout da sind
+    document.fonts?.ready.then(() => fitHighlight(box));
+  }, []);
+
+  // Hochkant: Flyer oben (column-reverse), darunter Titel und Eckdaten, dann der Eventtext
   return (
     <div style={{ ...s.highlight, ...(portrait && sp.highlight) }}>
-      <div style={s.highlightText}>
+      <div ref={textRef} style={{ ...s.highlightText, ...(portrait && sp.highlightText) }}>
         <div style={s.kicker}>
           {when}
           {time && ` // ${time} Uhr`}
         </div>
         <div style={s.highlightTitle}>{e.title}</div>
-        {e.sub && <div style={s.highlightSub}>{e.sub}</div>}
-        {(e.einlass || e.lines.length > 0) && (
-          <ul style={s.list}>
-            {e.einlass && <li style={s.listItem}>Einlass {e.einlass} Uhr</li>}
+        {facts && <div style={s.highlightSub}>{facts}</div>}
+        {e.lines.length > 0 && (
+          <ul data-list style={{ ...s.list, columnCount: cols }}>
             {e.lines.map((line, i) => (
-              <li key={i} style={s.listItem}>
+              <li key={i} data-line style={s.listItem}>
                 {line}
               </li>
             ))}
           </ul>
         )}
-        <div style={s.footerLeft}>quarterpipe.hamburg</div>
+        {e.infoQr && (
+          <div data-more style={{ ...s.more, display: 'none' }}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={e.infoQr} alt="" style={s.moreQr} />
+            <div>
+              <div style={s.moreLabel}>Mehr Infos unter:</div>
+              <div style={s.moreUrl}>quarterpipe.hamburg</div>
+            </div>
+          </div>
+        )}
+        <div data-footer style={s.footerLeft}>quarterpipe.hamburg</div>
       </div>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
@@ -155,7 +249,8 @@ const barlow = 'var(--font-barlow), "Arial Narrow", sans-serif';
 const dashed = '2px dashed rgba(255,255,255,0.25)';
 // Basiseinheit für Schrift und vertikale Abstände: 1 % der kurzen Seite (quer: Höhe, hochkant: Breite).
 // --u setzt FrameSlideshow auf der Stage, so bleiben die Pixelgrößen in beiden Formaten gleich.
-const u = (n: number) => `calc(var(--u) * ${n})`;
+// --fit < 1 setzt useFit, wenn der Inhalt sonst nicht passt.
+const u = (n: number) => `calc(var(--u) * var(--fit, 1) * ${n})`;
 const clamp = (lines: number): React.CSSProperties => ({
   display: '-webkit-box',
   WebkitLineClamp: lines,
@@ -246,9 +341,11 @@ const s: Record<string, React.CSSProperties> = {
   highlightText: {
     flex: 1,
     minWidth: 0,
+    minHeight: 0,
+    overflow: 'hidden',
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'center',
+    justifyContent: 'safe center',
   },
   highlightTitle: {
     fontFamily: anton,
@@ -256,6 +353,8 @@ const s: Record<string, React.CSSProperties> = {
     lineHeight: 1.02,
     textTransform: 'uppercase',
     margin: `${u(1.5)} 0 0`,
+    // sonst quetscht Flexbox den Titel (overflow: hidden) weg, statt dass fitHighlight greift
+    flexShrink: 0,
     ...clamp(4),
   },
   highlightSub: {
@@ -271,6 +370,7 @@ const s: Record<string, React.CSSProperties> = {
     margin: `${u(3.5)} 0 0`,
     padding: `${u(2.5)} 0 0`,
     borderTop: dashed,
+    columnGap: '4cqw',
   },
   listItem: {
     fontFamily: barlow,
@@ -278,8 +378,32 @@ const s: Record<string, React.CSSProperties> = {
     lineHeight: 1.35,
     opacity: 0.85,
     padding: `${u(0.6)} 0`,
+    breakInside: 'avoid',
     ...clamp(2),
   },
+  more: {
+    alignItems: 'center',
+    gap: u(3),
+    marginTop: u(3.5),
+    paddingTop: u(3),
+    borderTop: dashed,
+  },
+  moreQr: {
+    width: u(18),
+    height: u(18),
+    flexShrink: 0,
+    background: '#fff',
+    filter: 'none',
+    mixBlendMode: 'normal',
+  },
+  moreLabel: {
+    fontFamily: barlow,
+    fontSize: u(2.6),
+    letterSpacing: '0.15em',
+    textTransform: 'uppercase',
+    opacity: 0.6,
+  },
+  moreUrl: { fontFamily: anton, fontSize: u(4.5), lineHeight: 1.1, marginTop: u(0.5) },
   footerLeft: {
     fontFamily: barlow,
     fontSize: u(2),
@@ -326,12 +450,14 @@ const s: Record<string, React.CSSProperties> = {
   },
 };
 
-// Hochkant-Abweichungen: Flyer über dem Text, QR-Code unter dem Text, Programm einspaltig
+// Hochkant-Abweichungen: Flyer über dem Text, QR-Code unter dem Text, Programm einspaltig.
+// Der Flyer bekommt den Platz, den der Text übrig lässt (mind. die halbe Höhe), und wird darin ganz eingepasst.
 const sp: Record<string, React.CSSProperties> = {
   row: { gap: '3cqw' },
   rowDate: { width: '15cqw' },
   highlight: { flexDirection: 'column-reverse', gap: u(4), padding: `${u(6)} 7cqw` },
-  flyer: { height: 'auto', width: '100%', maxHeight: '55cqh', maxWidth: 'none' },
+  highlightText: { flex: '0 1 auto' },
+  flyer: { flex: '1 1 0', minHeight: '50cqh', height: 'auto', width: '100%', maxWidth: 'none' },
   qr: { flexDirection: 'column', gap: u(6), textAlign: 'center' },
   qrText: { maxWidth: 'none' },
   qrCode: { height: 'auto', width: '70cqw' },

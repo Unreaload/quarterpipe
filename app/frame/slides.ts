@@ -22,6 +22,7 @@ export interface FrameEvent {
   sub: string;
   lines: string[];
   imageUrl: string;
+  infoQr?: string; // nur Highlights: QR-Code zum Event auf der Website, falls der Text nicht ganz passt
 }
 
 // Fertig aufgelöste Slides, die an den Client gehen
@@ -32,7 +33,7 @@ export type FrameSlide =
   | { type: 'highlight'; duration?: number; today: string; event: FrameEvent };
 
 const DEFAULT_DAYS = 28;
-const MAX_LINES = 8;
+const SITE = 'https://quarterpipe.hamburg';
 
 function berlinToday(): string {
   return new Intl.DateTimeFormat('sv-SE', { timeZone: 'Europe/Berlin' }).format(new Date());
@@ -94,7 +95,7 @@ function toLines(description: string): string[] {
     if (text) out.push(text);
   }
   flushLinks();
-  return out.slice(0, MAX_LINES);
+  return out;
 }
 
 function toFrameEvent(e: TeamUpEvent): FrameEvent {
@@ -145,7 +146,9 @@ export async function resolveSlides(items: FrameItem[]): Promise<FrameSlide[]> {
         // mehrtägige Events nur einmal zeigen
         .filter((e) => !seen.has(e.title) && !!seen.add(e.title));
       const perEvent = await Promise.all(highlights.map(async (e): Promise<FrameSlide[]> => {
-        const highlight: FrameSlide = { type: 'highlight', duration: item.duration, today, event: toFrameEvent(e) };
+        // #event-<id> klappt das Event auf der Startseite auf
+        const event = { ...toFrameEvent(e), infoQr: await qrDataUri(`${SITE}/#event-${e.id}`) };
+        const highlight: FrameSlide = { type: 'highlight', duration: item.duration, today, event };
         const link = signupLink(e.description);
         if (!link) return [highlight];
         const [, m, d] = e.date.split('-').map(Number);

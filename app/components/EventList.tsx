@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { TeamUpEvent } from '../lib/teamup';
 
 // Renders "[Bandname](https://…)" as a link on the label, and bare URLs as
@@ -28,6 +28,22 @@ function linkify(text: string) {
 export function EventList({ events, today }: { events: TeamUpEvent[]; today: string }) {
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
 
+  // Deep-Link #event-<id> (z. B. QR-Code am Frame): Event aufklappen und hinscrollen
+  useEffect(() => {
+    const open = () => {
+      const id = decodeURIComponent(location.hash).match(/^#event-(.+)$/)?.[1];
+      if (!id || !events.some((e) => e.id === id)) return;
+      setExpandedIds((prev) => new Set(prev).add(id));
+      requestAnimationFrame(() => document.getElementById(`event-${id}`)?.scrollIntoView({ block: 'start' }));
+    };
+    const raf = requestAnimationFrame(open);
+    window.addEventListener('hashchange', open);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener('hashchange', open);
+    };
+  }, [events]);
+
   function toggleExpanded(id: string) {
     setExpandedIds(prev => {
       const next = new Set(prev);
@@ -45,6 +61,7 @@ export function EventList({ events, today }: { events: TeamUpEvent[]; today: str
         return (
           <div
             key={event.id}
+            id={`event-${event.id}`}
             className={`group w-full border-t-4 border-black pt-8 pb-10 md:pt-10 md:pb-14 transition-all duration-500 ${isPast ? 'opacity-20 grayscale' : 'opacity-100'}`}
           >
             <div className="flex items-baseline justify-end gap-3 md:gap-4 mb-3 md:mb-4">

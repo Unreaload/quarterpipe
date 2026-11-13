@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "frame:resize": "node scripts/frame-resize.mjs"
+    "frame:resize": "node scripts/frame-resize.mjs",
+    "frame:pdf": "node scripts/frame-pdf.mjs"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.2.0",
@@ -20,6 +21,7 @@
   },
   "devDependencies": {
     "@electric-sql/pglite": "^0.5.10",
+    "@napi-rs/canvas": "^1.1.1",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/nodemailer": "^8.0.0",
@@ -29,6 +31,7 @@
     "babel-plugin-react-compiler": "1.0.0",
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
+    "pdfjs-dist": "^6.5.438",
     "sharp": "^0.34.5",
     "tailwindcss": "^4",
     "typescript": "^5"

@@ -25,6 +25,7 @@ This project uses [`next/font`](https://nextjs.org/docs/app/building-your-applic
 `/frame` ist eine Vollbild-Slideshow für den Monitor mit Raspberry Pi (Chromium-Kiosk). Inhalte kommen aus dem Repo:
 
 - Medien nach `public/frame/` legen, dann `npm run frame:resize` (verkleinert Bilder auf max. 1920×1080 und dreht sie nach EXIF).
+- PDFs nach `public/frame/` legen, dann `npm run frame:pdf` (optional `-- datei.pdf [seite]`). Jede Seite wird als `<name>-<seite>.jpg` gerendert (Hochkant 1080×1920, Querformat 1920×1080); die fertigen `image`-Einträge für die Playlist werden ausgegeben. Danach nicht mehr `frame:resize` über diese Bilder laufen lassen, das würde Hochkantbilder auf 1080 px Höhe verkleinern.
 - Playlist in `content/frame.json` pflegen. `duration` in Sekunden, sonst gilt `defaultDuration`.
 
 | `type`  | Feld   | Verhalten |

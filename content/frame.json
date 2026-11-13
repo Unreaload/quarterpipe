@@ -11,7 +11,6 @@
       "duration": 15
     },
     { "type": "page", "src": "/", "duration": 15 },
-    { "type": "text", "text": "Willkommen in der\nQuarterpipe", "duration": 15 },
-    { "type": "image", "src": "/frame/Bilderrahmen1-kolonial-ENTW1scr-1.jpg", "duration": 45 }
+    { "type": "text", "text": "Willkommen in der\nQuarterpipe", "duration": 15 }
   ]
 }
